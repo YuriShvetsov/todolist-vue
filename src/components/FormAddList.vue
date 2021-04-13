@@ -1,23 +1,34 @@
 <template>
-  <h3>Modal add list</h3>
-  <button
-    v-on:click="emitSuccess"
-  >Success</button>
-  <button
-    v-on:click="emitCancel"
-  >Cancel</button>
+  <form class="form"
+    v-on:submit.prevent
+  >
+    <div class="form__title title title_size_l">Add list</div>
+    <div class="form__row form__row_inputs">
+      <label class="form__label">
+        <span>Name</span>
+        <input type="text"
+          class="form__input form__input_type_text"
+          v-model="name"
+        >
+      </label>
+    </div>
+    <div class="form__row form__row_controls">
+      <button>Success</button>
+      <button>Cancel</button>
+    </div>
+  </form>
 </template>
 
 <script>
 export default {
   emits: ['success', 'cancel'],
-  methods: {
-    emitSuccess() {
-      this.$emit('success')
-    },
-    emitCancel() {
-      this.$emit('cancel')
+  data() {
+    return {
+      name: ''
     }
+  },
+  methods: {
+
   }
 }
 </script>
