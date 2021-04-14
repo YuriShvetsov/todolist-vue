@@ -4,7 +4,7 @@
     <div class="lists-view__header">
       <div class="lists-view__title">My lists</div>
       <button class="lists-view__add-button"
-        v-on:click="emitAddList"
+        v-on:click="openModalAddList"
       >New list</button>
     </div>
 
@@ -19,33 +19,48 @@
       </ul>
     </div>
 
+    <modal ref="modalAddList">
+      <form-add-list
+        v-on:success="emitAddList($event), closeModalAddList()"
+        v-on:cancel="closeModalAddList"
+      ></form-add-list>
+    </modal>
+
   </div>  
 </template>
 
 <script>
 import ListItem from './ListItem.vue';
+import Modal from './Modal.vue';
+import FormAddList from './FormAddList.vue';
 
 export default {
   name: 'lists-view',
-  emits: ['open-list'],
+  emits: ['open-list', 'add-list'],
   components: {
-    'list-item': ListItem
+    ListItem,
+    Modal,
+    FormAddList
   },
   props: {
     lists: Array
   },
   data() {
-    return {}
+    return {};
   },
   methods: {
-    emitAddList() {
-
+    openModalAddList() {
+      this.$refs.modalAddList.open();
     },
+    closeModalAddList() {
+      this.$refs.modalAddList.close();
+    },
+
     emitOpenList(id) {
       this.$emit('open-list', id);
     },
-    doSomething() {
-      console.log('I am component <lists-view />');
+    emitAddList(data) {
+      this.$emit('add-list', data);
     }
   }
 }

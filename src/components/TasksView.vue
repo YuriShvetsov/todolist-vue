@@ -1,7 +1,7 @@
 <template>
   <div class="tasks-view">
     <div class="tasks-view__header">
-      <div class="tasks-view__title">{{ list.name }}</div>
+      <div class="tasks-view__title">{{ name }}</div>
       <!-- menu -->
     </div>
     <div class="tasks-view__controls">
@@ -17,9 +17,10 @@
     <div class="tasks-view__body">
       <ul class="tasks-view__ul">
         <task
-          v-for="task in list.tasks"
+          v-for="task in tasks"
           v-bind:key="task.id"
           v-bind="task"
+          v-on:edit="emitEditTask"
         ></task>
       </ul>
     </div>
@@ -40,19 +41,31 @@ import FormAddTask from './FormAddTask.vue';
 
 export default {
   name: 'tasks-view',
-  emits: ['add-task'],
-    components: {
+  emits: [
+    'add-task',
+    'edit-task',
+    // 'change-done-task',
+    // 'delete-task',
+    // 'rename-list',
+    // 'clear-list',
+    // 'sort-list',
+    // 'delete-list',
+    // 'swap-tasks',
+  ],
+  components: {
     Task,
     Modal,
     FormAddTask
   },
   props: {
-    list: Object
+    id: String,
+    name: String,
+    tasks: Array
   },
   data() {
     return {
 
-    }
+    };
   },
   methods: {
     openModalAddTask() {
@@ -64,12 +77,20 @@ export default {
 
     emitAddTask(data) {
       this.$emit('add-task', {
-        listId: this.list.id,
+        listId: this.id,
         name: data.name,
         notes: data.notes
       });
 
       this.closeModalAddTask();
+    },
+    emitEditTask({ taskId, name, notes }) {
+      this.$emit('edit-task', {
+        listId: this.id,
+        taskId,
+        name,
+        notes
+      });
     }
   }
 }

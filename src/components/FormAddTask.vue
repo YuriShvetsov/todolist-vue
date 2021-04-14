@@ -1,32 +1,55 @@
 <template>
-  <div class="form">
-
-    <input type="text" placeholder="name"
-      v-model="name"
-    >
-    <input type="text" placeholder="name"
-      v-model="notes"
-    >
-
-    <div class="form__row">
-      <button type="submit"
-        v-on:click.prevent="emitSuccess"
-      >OK</button>
-      <button
-        v-on:click="emitCancel"
-      >Cancel</button>
+  <form class="form"
+    v-on:submit.prevent
+  >
+    <div class="form__header">
+      <div class="form__title title title_size_l">Task adding</div>
     </div>
-
-  </div>
+    <div class="form__body">
+      <div class="form__row">
+        <label class="form__label">
+          <span>Name</span>
+          <input type="text"
+            spellcheck="false"
+            autocomplete="off"
+            class="form__input form__input_type_text"
+            v-model="name"
+          >
+        </label>
+      </div>
+      <div class="form__row">
+        <label class="form__label">
+          <span>Notes</span>
+          <textarea
+            rows="5"
+            spellcheck="false"
+            autocomplete="off"
+            class="form__input form__textarea"
+            v-model="notes"
+          >
+          </textarea>
+        </label>
+      </div>
+      <div class="form__row">
+        <button
+          v-on:click="emitSuccess"
+        >Success</button>
+        <button
+          v-on:click="emitCancel"
+        >Cancel</button>
+      </div>
+    </div>
+  </form>
 </template>
 
 <script>
 export default {
+  name: 'form-add-task',
   emits: ['success', 'cancel'],
   data() {
     return {
       name: '',
-      notes: 'Some notes'
+      notes: ''
     };
   },
   methods: {

@@ -5,7 +5,6 @@
 
       <div class="todo__header">
         <div class="todo__logo">Todolist</div>
-        <button v-on:click="openModal">Log</button>
       </div>
 
       <div class="todo__body">
@@ -14,24 +13,21 @@
           <lists-view
             v-bind:lists="lists"
             v-on:open-list="openList"
+            v-on:add-list="addList"
           ></lists-view>
         </div>
 
         <div class="todo__section todo__section_main">
           <tasks-view
-            v-bind:list="openedList"
+            v-bind="openedList"
             v-on:add-task="addTask"
+            v-on:edit-task="editTask"
           ></tasks-view>
         </div>
 
       </div>
 
     </div>
-
-    <modal ref="modal">
-      <h2>Modal window</h2>
-      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto culpa vel blanditiis consequatur deserunt, tempore a inventore nihil cupiditate cumque.</p>
-    </modal>
 
   </div>
 </template>
@@ -53,7 +49,7 @@ export default {
     return {
       lists: [],
       openedListId: null
-    }
+    };
   },
   computed: {
     openedList() {
@@ -97,7 +93,13 @@ export default {
       this.openedListId = id;
     },
     addList(name) {
+      const newList = {
+        id: this.nextListId,
+        name,
+        tasks: []
+      };
 
+      this.lists.push(newList);
     },
     renameList(id, name) {
 
@@ -107,25 +109,29 @@ export default {
     },
     addTask({ listId, name, notes }) {
       const list = this.lists.find(list => list.id === listId);
-      const task = {
+      const newTask = {
         id: 'task-100',
         done: false,
         name, 
         notes
       };
 
-      list.tasks.push(task);
+      list.tasks.push(newTask);
     },
-    toggleDoneTask(id) {
+    changeDoneTask(id) {
 
     },
-    editTask(data) {
+    editTask({ listId, taskId, name, notes }) {
+      const list = this.lists.find(list => list.id === listId);
+      const task = list.tasks.find(task => task.id === taskId);
+
+      task.name = name;
+      task.notes = notes;
+    },
+    swapLists(a, b) {
 
     },
-    replaceTask(a, b) {
-
-    },
-    replaceList(a, b) {
+    swapTasks(a, b) {
 
     },
     deleteTask(id) {
@@ -133,26 +139,26 @@ export default {
     },
 
     generateId() {
-      return Math.random().toString(36).substr(2, 8)
+      return Math.random().toString(36).substr(2, 8);
     },
     checkForLists() {
       if (this.lists.length > 0) return;
 
-      this.addDefaultList()
-      this.openFirstList()
-      this.writeToLS()
+      this.addEmptyList();
+      this.openFirstList();
+      this.writeToLS();
     },
-    addDefaultList() {
-      const defaultList = {
+    addEmptyList() {
+      const emptyList = {
         id: this.nextListId,
         name: 'Main',
         tasks: []
       };
 
-      this.lists.push(defaultList);
+      this.lists.push(emptyList);
     },
     openFirstList() {
-      this.openedListId = this.lists[0].id
+      this.openedListId = this.lists[0].id;
     },
     setPlugToLists() {
       return [
@@ -181,9 +187,6 @@ export default {
           ]
         }
       ];
-    },
-    openModal() {
-      this.$refs.modal.open();
     }
   },
   created() {

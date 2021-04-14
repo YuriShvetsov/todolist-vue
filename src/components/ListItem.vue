@@ -11,6 +11,7 @@
 
 <script>
 export default {
+  name: 'list-item',
   emits: ['open'],
   props: {
     id: String,

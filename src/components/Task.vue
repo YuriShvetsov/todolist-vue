@@ -20,16 +20,33 @@
 
     <div class="task__menu">
       <div class="task__menu-container">
-        <button v-on:click="emitEdit">Edit</button>
+        <button v-on:click="openModalEditTask">Edit</button>
         <button v-on:click="emitDelete">Delete</button>
       </div>
     </div>
+
+    <modal ref="modalEditTask">
+      <form-edit-task
+        v-bind="{ name, notes }"
+        v-on:success="emitEdit($event), closeModalEditTask()"
+        v-on:cancel="closeModalEditTask"
+      ></form-edit-task>
+    </modal>
 
   </li>
 </template>
 
 <script>
+import Modal from './Modal.vue';
+import FormEditTask from './FormEditTask.vue';
+
 export default {
+  name: 'task',
+  components: {
+    Modal,
+    FormEditTask
+  },
+  emits: ['change-done', 'edit', 'delete'],
   props: {
     id: String,
     done: Boolean,
@@ -37,11 +54,22 @@ export default {
     notes: String
   },
   methods: {
+    openModalEditTask() {
+      this.$refs.modalEditTask.open();
+    },
+    closeModalEditTask() {
+      this.$refs.modalEditTask.close();
+    },
+
     emitChangeDone() {
       
     },
-    emitEdit() {
-
+    emitEdit({ name, notes }) {
+      this.$emit('edit', {
+        taskId: this.id,
+        name,
+        notes
+      });
     },
     emitDelete() {
 
