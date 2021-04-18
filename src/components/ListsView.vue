@@ -2,8 +2,8 @@
   <div class="lists-view">
 
     <div class="lists-view__header">
-      <div class="lists-view__title">My lists</div>
-      <button class="lists-view__add-button"
+      <div class="lists-view__title title title_size_s">My lists</div>
+      <button class="lists-view__add-button button"
         v-on:click="openModalAddList"
       >New list</button>
     </div>
@@ -14,6 +14,7 @@
           v-for="list in lists"
           v-bind:key="list.id"
           v-bind="list"
+          v-bind:isActive="listIsOpened(list.id)"
           v-on:open="emitOpenList"
         />
       </ul>
@@ -43,10 +44,14 @@ export default {
     FormAddList
   },
   props: {
-    lists: Array
+    lists: Array,
+    openedListId: String
   },
   data() {
     return {};
+  },
+  computed: {
+
   },
   methods: {
     openModalAddList() {
@@ -61,6 +66,10 @@ export default {
     },
     emitAddList(data) {
       this.$emit('add-list', data);
+    },
+
+    listIsOpened(id) {
+      return id === this.openedListId;
     }
   }
 }
@@ -77,6 +86,7 @@ export default {
 .lists-view__header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 12px 0;
 }
 
@@ -86,9 +96,5 @@ export default {
   height: 100%;
   margin: 0;
   padding: 12px 0;
-}
-
-.lists-view__add-button {
-  display: block;
 }
 </style>

@@ -4,19 +4,21 @@
   >
 
     <div class="form__header">
-      <div class="form__title title title_size_l">Deleting list</div>
-      <div class="form__desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+      <div class="form__title title title_size_s title_color_red">List deleting</div>
+      <div class="form__desc text text_color_gray">Do you really want to delete the list along with all tasks?</div>
     </div>
 
     <div class="form__body">
-      <div class="form__row">
-        <button
+
+      <div class="form__row form__row_controls">
+        <button class="form__control-button button button_type_warn"
           v-on:click="emitSuccess"
-        >Success</button>
-        <button
+        >OK</button>
+        <button class="form__control-button button button_color_red"
           v-on:click="emitCancel"
         >Cancel</button>
       </div>
+      
     </div>
     
   </form>
@@ -24,6 +26,15 @@
 
 <script>
 export default {
-  name: 'form-delete-list'
+  name: 'form-delete-list',
+  emits: ['success', 'cancel'],
+  methods: {
+    emitSuccess() {
+      this.$emit('success');
+    },
+    emitCancel() {
+      this.$emit('cancel');
+    }
+  }
 }
 </script>

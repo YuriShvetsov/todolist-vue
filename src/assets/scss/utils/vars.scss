@@ -1,11 +1,18 @@
 $colorBlack: #333333;
+$colorGray: #7a7a7a;
+$colorGrayLightest: #fafafc;
 $colorBlue: #1b84ff;
 $colorBlueDark: #1a75f0;
 $colorBlueLightest: #e1effc;
-$colorRed: #e64552;
-$colorViolet: #6152ea;
+$colorRed: #ed344e;
+$colorViolet: #4d42fe;
+$colorVioletLightest: #efeeff;
 $colorGreenCold: #1ad1a1;
 $colorGreenWarm: #6cd500;
-$colorBg: #a298ff;
 $colorBgLight: #f0f0f5;
 $colorBgLightest: #f5f5fa;
+
+$mainBg: linear-gradient(135deg,#4d42fe,#07ccff);
+
+$font_main: 'Open Sans', sans-serif;
+$font_logo: 'Galada', sans-serif;

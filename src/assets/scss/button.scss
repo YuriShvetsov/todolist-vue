@@ -1,0 +1,78 @@
+.button {
+  padding: 7px 12px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1;
+  color: $colorViolet;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  border-radius: 3px;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 150ms ease-in-out;
+}
+
+.button:hover {
+  background-color: #f7f7f7;
+}
+
+.button_type_icon {
+  width: 28px;
+  height: 28px;
+  text-indent: -999px;
+  background-color: rgba(255, 255, 255, 0);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 13px 13px;
+  border-radius: 50%;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity .15s ease-in-out;
+}
+
+.button_type_popup {
+  font-weight: normal;
+  text-transform: lowercase;
+  text-align: left;
+  color: $colorBlack;
+}
+
+.button_type_popup::first-letter {
+  text-transform: uppercase;
+}
+
+.button_type_submit {
+  color: #fff;
+  background-color: $colorViolet;
+}
+
+.button_type_submit:hover {
+  background-color: darken($colorViolet, 2%);
+}
+
+.button_type_warn {
+  color: #fff;
+  background-color: $colorRed;
+}
+
+.button_type_warn:hover {
+  background-color: darken($colorRed, 2%);
+}
+
+.button_type_icon:hover {
+  background-color: rgba(255, 255, 255, 0);
+  opacity: .8;
+}
+
+.button_icon_menu {
+  background-image: url(../images/menu.svg);
+}
+
+.button_color_red {
+  color: $colorRed;
+}

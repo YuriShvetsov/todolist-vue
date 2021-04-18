@@ -1,6 +1,7 @@
 .title {
   font-weight: bold;
-  line-height: 2;
+  color: $colorBlack;
+  line-height: 1.5;
 }
 
 .title_size_xl {
@@ -17,4 +18,20 @@
 
 .title_size_s {
   font-size: 16px;
+}
+
+.title_color_red {
+  color: $colorRed;
+}
+
+.title_color_violet {
+  color: $colorViolet;
+}
+
+.text {
+  font-size: 13px;
+}
+
+.text_color_gray {
+  color: $colorGray;
 }

@@ -2,13 +2,16 @@
   <form class="form"
     v-on:submit.prevent
   >
+
     <div class="form__header">
-      <div class="form__title title title_size_l">Task adding</div>
+      <div class="form__title title title_size_s title_color_violet">Task adding</div>
     </div>
+
     <div class="form__body">
+
       <div class="form__row">
         <label class="form__label">
-          <span>Name</span>
+          <span class="form__label-name">Name</span>
           <input type="text"
             spellcheck="false"
             autocomplete="off"
@@ -17,9 +20,10 @@
           >
         </label>
       </div>
+
       <div class="form__row">
         <label class="form__label">
-          <span>Notes</span>
+          <span class="form__label-name">Notes</span>
           <textarea
             rows="5"
             spellcheck="false"
@@ -30,15 +34,17 @@
           </textarea>
         </label>
       </div>
-      <div class="form__row">
-        <button
+
+      <div class="form__row form__row_controls">
+        <button class="form__control-button button button_type_submit"
           v-on:click="emitSuccess"
-        >Success</button>
-        <button
+        >OK</button>
+        <button class="form__control-button button"
           v-on:click="emitCancel"
         >Cancel</button>
       </div>
     </div>
+
   </form>
 </template>
 

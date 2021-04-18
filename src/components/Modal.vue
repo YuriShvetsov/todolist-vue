@@ -30,9 +30,11 @@ export default {
   methods: {
     open() {
       this.isVisible = true;
+      document.body.style.overflow = 'hidden';
     },
     close() {
       this.isVisible = false;
+      document.body.style.overflow = 'auto';
     }
   }
 }
@@ -49,15 +51,14 @@ export default {
   pointer-events: none;
 }
 .modal__container {
-  width: 100%;
-  max-width: 450px;
-  padding: 16px 0;
+  min-width: 420px;
+  padding: 25px 40px;
   position: absolute;
   left: 50%;
   top: 0;
   background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0, 0.35);
   transform: translate(-50%, 65px);
   z-index: 102;
   pointer-events: all;
