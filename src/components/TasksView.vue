@@ -1,62 +1,63 @@
 <template>
   <div class="tasks-view" v-if="dataIsValid">
 
-    <div class="tasks-view__container">
-      <div class="tasks-view__header">
+    <div class="tasks-view__header">
 
-        <div class="tasks-view__title title title_size_s">{{ name }}</div>
+      <div class="tasks-view__title title title_size_s">{{ name }}</div>
 
-        <!-- menu -->
-        <popup ref="menu">
+      <popup ref="menu">
 
-          <template v-slot:opener>
-            <button class="popup__opener button button_type_icon button_icon_menu"
-              v-on:click="toggleMenu"
-            >menu</button>
-          </template>
+        <template v-slot:opener>
+          <button class="popup__opener button button_type_icon button_icon_menu"
+            v-on:click="toggleMenu"
+          >menu</button>
+        </template>
 
-          <template v-slot:content>
-            <ul class="popup__action-list">
-              <li class="popup__action">
-                <button class="popup__action-button button button_type_popup"
-                  v-on:click="openModalRenameList(), closeMenu()"
-                >Rename</button>
-              </li>
-              <li class="popup__action">
-                <button class="popup__action-button button button_type_popup button_color_red"
-                  v-on:click="openModalDeleteList(), closeMenu()"
-                >Delete</button>
-              </li>
-            </ul>
-          </template>
+        <template v-slot:content>
+          <ul class="popup__action-list">
+            <li class="popup__action">
+              <button class="popup__action-button button button_type_popup button_icon_edit"
+                v-on:click="openModalRenameList(), closeMenu()"
+              >Rename</button>
+            </li>
+            <li class="popup__action">
+              <button class="popup__action-button button button_type_popup button_icon_delete button_color_red"
+                v-on:click="openModalDeleteList(), closeMenu()"
+              >Delete</button>
+            </li>
+          </ul>
+        </template>
 
-        </popup>
+      </popup>
 
+    </div>
+
+    <div class="tasks-view__controls">
+      <div class="tasks-view__controls-col">
+        <button class="button button_type_text-icon button_icon_add"
+          v-on:click="openModalAddTask"
+        >Add task</button>
       </div>
-      <div class="tasks-view__controls">
-        <div class="tasks-view__controls-col">
-          <button class="button"
-            v-on:click="openModalAddTask"
-          >New task</button>
-        </div>
-        <div class="tasks-view__controls-col">
-          <button class="button button_color_red"
-            v-on:click="emitClearList"
-          >Clear list</button>
-        </div>
+      <div class="tasks-view__controls-col">
+        <button class="button_color_red button button_type_text-icon button_icon_minus"
+          v-bind:class="{ 'button_type_disabled': !haveCompletedTasks }"
+          v-bind:disabled="!haveCompletedTasks"
+          v-on:click="emitClearList"
+        >Clear list</button>
       </div>
-      <div class="tasks-view__body">
-        <ul class="tasks-view__ul">
-          <task
-            v-for="task in tasks"
-            v-bind:key="task.id"
-            v-bind="task"
-            v-on:edit="emitEditTask"
-            v-on:change-done="emitChangeDone"
-            v-on:delete="emitDeleteTask"
-          ></task>
-        </ul>
-      </div>
+    </div>
+
+    <div class="tasks-view__body scrollable-wrapper">
+      <ul class="tasks-view__ul scrollable-child">
+        <task
+          v-for="task in tasks"
+          v-bind:key="task.id"
+          v-bind="task"
+          v-on:edit="emitEditTask"
+          v-on:change-done="emitChangeDone"
+          v-on:delete="emitDeleteTask"
+        ></task>
+      </ul>
     </div>
 
     <div class="tasks-view__outer">
@@ -136,10 +137,12 @@ export default {
         this.name &&
         this.tasks
       );
+    },
+    haveCompletedTasks() {
+      return this.tasks.find(list => list.done);
     }
   },
   methods: {
-    // Modals
     openModalAddTask() {
       this.$refs.modalAddTask.open();
     },
@@ -165,7 +168,6 @@ export default {
       this.$refs.modalDeleteList.close();
     },
 
-    // Popups
     toggleMenu() {
       this.$refs.menu.toggle();
     },
@@ -173,10 +175,6 @@ export default {
       this.$refs.menu.close();
     },
 
-    // Handlers
-
-
-    // Events emiting
     emitRenameList(name) {
       this.$emit('rename-list', {
         id: this.id,
@@ -224,6 +222,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.tasks-view {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  height: 100%;
+}
+
 .tasks-view__header {
   display: flex;
   justify-content: space-between;
@@ -246,6 +251,8 @@ export default {
 }
 
 .tasks-view__ul {
+  width: 100%;
+  margin: 0;
   padding: 0;
 }
 </style>

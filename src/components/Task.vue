@@ -30,12 +30,12 @@
         <template v-slot:content>
           <ul class="popup__action-list">
             <li class="popup__action">
-              <button class="popup__action-button button button_type_popup"
+              <button class="popup__action-button button button_type_popup button_icon_edit"
                 v-on:click="openModalEditTask(), closeMenu()"
               >Edit</button>
             </li>
             <li class="popup__action">
-              <button class="popup__action-button button button_type_popup button_color_red"
+              <button class="popup__action-button button button_type_popup button_icon_delete button_color_red"
                 v-on:click="emitDelete(), closeMenu()"
               >Delete</button>
             </li>
@@ -131,7 +131,6 @@ export default {
 .task {
   position: relative;
   list-style: none;
-  background-color: #fff;
   border: 2px solid rgba(255, 255, 255, 0);
   border-radius: 5px;
   transition: border 150ms ease-in-out;
@@ -168,6 +167,7 @@ export default {
 
 .task__name {
   font-size: 14px;
+  font-weight: bold;
   color: $colorBlack;
 }
 

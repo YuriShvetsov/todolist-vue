@@ -43,17 +43,23 @@
 </template>
 
 <script>
+
+/*
+  1. Стилизовать task
+  2. Стилизовать input в формах
+  3. Фокус в формах
+  4. Обязательные поля в формах ()
+  ...
+*/
+
 import ListsView from './ListsView.vue';
 import TasksView from './TasksView.vue';
-
-import Modal from './Modal.vue';
 
 export default {
   name: 'todo',
   components: {
     ListsView,
-    TasksView,
-    Modal
+    TasksView
   },
   data() {
     return {
@@ -84,7 +90,6 @@ export default {
         'Friday',
         'Saturday'
       ];
-      
       const monthNames = [
         'January',
         'February',
@@ -162,7 +167,6 @@ export default {
       localStorage.setItem('todo', JSON.stringify(data));
     },
 
-    // Data work
     genNextListId() {
       if (this.lists.length === 0) {
         this.nextListId = 'list-' + this.generateId();
@@ -240,7 +244,6 @@ export default {
       this.openedListId = this.lists[this.lists.length - 1].id;
     },
 
-    // Event handling (11 events)
     onOpenList(id) {
       this.openedListId = id;
 
@@ -330,12 +333,10 @@ export default {
       this.writeToLS();
     },
 
-    // Other
     generateId() {
       return Math.random().toString(36).substr(2, 8);
     },
 
-    // Temp
     setPlugToLists() {
       this.lists = [
         {
@@ -374,6 +375,7 @@ export default {
   width: 100vw;
   height: 100vh;
   padding: 16px;
+
   background-image: $mainBg;
 }
 
@@ -385,14 +387,16 @@ export default {
   height: 100%;
   margin: 0 auto;
   padding: 16px 0;
+  
   background-color: #fff;
   border-radius: 8px;
-  overflow: hidden;
   border: 1px solid #eee;
 }
 
 .todo__header {
   display: flex;
+
+  height: 56px;
   padding: 0 16px;
   position: relative;
 }
@@ -442,7 +446,7 @@ export default {
 
 .todo__body {
   display: flex;
-  height: 100%;
+  height: calc(100% - 56px);
 }
 
 .todo__section {

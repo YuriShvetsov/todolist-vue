@@ -15,7 +15,7 @@
             spellcheck="false"
             autocomplete="off"
             class="form__input form__input_type_text"
-            v-model="name"
+            v-model.trim="name"
           >
         </label>
       </div>

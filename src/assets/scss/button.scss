@@ -55,13 +55,24 @@
   background-color: darken($colorViolet, 2%);
 }
 
+.button_type_disabled {
+  filter: grayscale(1);
+  opacity: .5;
+  user-select: none;
+  cursor: default;
+}
+
+.button_type_disabled:hover {
+  background-color: rgba(255, 255, 255, 0);
+}
+
 .button_type_warn {
   color: #fff;
   background-color: $colorRed;
 }
 
 .button_type_warn:hover {
-  background-color: darken($colorRed, 2%);
+  background-color: $colorRedDark;
 }
 
 .button_type_icon:hover {
@@ -69,8 +80,50 @@
   opacity: .8;
 }
 
+.button_type_text-icon {
+  padding-right: 33px;
+  background-color: rgba(255, 255, 255, 0);
+  background-position: calc(100% - 13px) calc(50% - 1px);
+  background-repeat: no-repeat;
+  background-size: 12px 12px;
+}
+
+.button_type_popup {
+  width: 100%;
+  padding-left: 35px;
+  font-size: 13px;
+  font-weight: 400;
+  text-align: left;
+  text-transform: capitalize;
+  color: #222;
+  background-color: hsla(0,0%,100%,0);
+  background-position: 12px;
+  background-repeat: no-repeat;
+  background-size: 13px 13px;
+}
+
 .button_icon_menu {
   background-image: url(../images/menu.svg);
+}
+
+.button_icon_grabber {
+  background-image: url(../images/grabber.svg);
+}
+
+.button_icon_minus {
+  background-image: url(../images/minus.svg);
+}
+
+.button_icon_add {
+  background-image: url(../images/add.svg);
+}
+
+.button_icon_edit {
+  background-image: url(../images/edit.svg);
+}
+
+.button_icon_delete {
+  background-image: url(../images/delete.svg);
 }
 
 .button_color_red {

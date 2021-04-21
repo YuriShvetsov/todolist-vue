@@ -3,13 +3,13 @@
 
     <div class="lists-view__header">
       <div class="lists-view__title title title_size_s">My lists</div>
-      <button class="lists-view__add-button button"
+      <button class="lists-view__add-button button button_type_text-icon button_icon_add"
         v-on:click="openModalAddList"
-      >New list</button>
+      >Add list</button>
     </div>
 
-    <div class="lists-view__body">
-      <ul class="lists-view__ul">
+    <div class="lists-view__body scrollable-wrapper">
+      <ul class="lists-view__ul scrollable-child">
         <list-item
           v-for="list in lists"
           v-bind:key="list.id"
@@ -47,12 +47,6 @@ export default {
     lists: Array,
     openedListId: String
   },
-  data() {
-    return {};
-  },
-  computed: {
-
-  },
   methods: {
     openModalAddList() {
       this.$refs.modalAddList.open();
@@ -80,21 +74,27 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: stretch;
+
   height: 100%;
+  padding-top: 51px;
+
+  position: relative;
 }
 
 .lists-view__header {
+  height: 51px;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .lists-view__ul {
-  display: block;
-  width: 100%;
-  height: 100%;
   margin: 0;
-  padding: 12px 0;
+  padding: 0;
 }
 </style>
