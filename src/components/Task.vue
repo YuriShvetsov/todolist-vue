@@ -3,13 +3,15 @@
 
     <div class="task__container">
       <div class="task__done">
-        <label class="task__done-label">
-          <input type="checkbox"
-            class="task__done-input"
-            v-bind:checked="done"
-            v-on:change="emitChangeDone"
-          >
-        </label>
+        <input type="checkbox"
+          class="task__done-checkbox"
+          v-bind:id="id"
+          v-bind:checked="done"
+          v-on:change="emitChangeDone"
+        >
+        <label class="task__done-label"
+          v-bind:for="id"
+        ></label>
       </div>
 
       <div class="task__content">
@@ -19,10 +21,12 @@
         </div>
       </div>
 
+      <button class="task__grab-button button button_type_icon button_icon_grabber">Grab</button>
+
       <popup ref="menu" class="task__menu">
 
         <template v-slot:opener>
-          <button class="popup__opener button button_type_icon button_icon_menu"
+          <button class="task__menu-button popup__opener button button_type_icon button_icon_menu"
             v-on:click="toggleMenu"
           >menu</button>
         </template>
@@ -130,17 +134,30 @@ export default {
 
 .task {
   position: relative;
+
   list-style: none;
+
+  background-color: rgba(255, 255, 255, 0);
   border: 2px solid rgba(255, 255, 255, 0);
   border-radius: 5px;
-  transition: border 150ms ease-in-out;
+
+  user-select: none;
+  transition: background-color 150ms ease-in-out;
+}
+
+.task:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.task_selected {
+  background-color: rgba(235, 31, 31, 0.062);
 }
 
 .task:not(:last-of-type) {
   margin-bottom: 2px;
 }
 
-.task:hover {
+.task_selected {
   border: 2px solid #efefef;
 }
 
@@ -158,7 +175,53 @@ export default {
 }
 
 .task__done {
-  margin-right: 8px;
+  margin-right: 12px;
+}
+
+.task__done-checkbox {
+  display: none;
+}
+
+.task__done-label {
+  display: block;
+  width: 18px;
+  height: 18px;
+
+  position: relative;
+
+  background-color: #fff;
+  border: 2px solid #e4e4ee;
+  border-radius: 50%;
+
+  cursor: pointer;
+  z-index: 1;
+}
+
+.task__done-label::before {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
+  opacity: 0;
+  z-index: 2;
+}
+
+.task__done-checkbox:checked + .task__done-label {
+  background-color: unset;
+  background: linear-gradient(#f16377,#ed344e);
+  border: none;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, .2);
+}
+
+.task__done-checkbox:checked + .task__done-label::before {
+  opacity: 1;
 }
 
 .task__content {
@@ -177,5 +240,22 @@ export default {
   font-size: 13px;
   color: $colorGray;
   white-space: pre-wrap;
+}
+
+.task__grab-button {
+  display: none;
+}
+
+.task__grab-button,
+.task__menu-button {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s ease-in-out;
+}
+
+.task:hover .task__grab-button,
+.task:hover .task__menu-button {
+  pointer-events: all;
+  opacity: 1;
 }
 </style>

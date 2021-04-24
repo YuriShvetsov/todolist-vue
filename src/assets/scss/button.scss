@@ -18,7 +18,7 @@
 }
 
 .button:hover {
-  background-color: #f7f7f7;
+  background-color: rgba(0, 0, 0, .02);
 }
 
 .button_type_icon {
@@ -108,6 +108,11 @@
 
 .button_icon_grabber {
   background-image: url(../images/grabber.svg);
+  cursor: grab;
+}
+
+.button_icon_grabber:active {
+  cursor: grabbing;
 }
 
 .button_icon_minus {

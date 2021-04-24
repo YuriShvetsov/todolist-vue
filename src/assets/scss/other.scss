@@ -1,0 +1,5 @@
+.grabbing *,
+.grabbing *::before,
+.grabbing *::after {
+  cursor: grabbing !important;
+}

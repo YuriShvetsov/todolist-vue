@@ -1,6 +1,7 @@
 <template>
   <div class="popup"
     ref="popup"
+    v-on:mouseleave="close"
   >
 
     <slot name="opener"></slot>

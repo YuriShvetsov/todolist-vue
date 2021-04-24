@@ -4,7 +4,7 @@
   >
 
     <div class="form__header">
-      <div class="form__title title title_size_s title_color_violet">Task editing</div>
+      <div class="form__title title title_size_s title_color_violet">Editing of task</div>
     </div>
 
     <div class="form__body">

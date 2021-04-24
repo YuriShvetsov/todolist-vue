@@ -4,7 +4,7 @@
   >
 
     <div class="form__header">
-      <div class="form__title title title_size_s title_color_violet">List adding</div>
+      <div class="form__title title title_size_s title_color_violet">Creating of list</div>
     </div>
 
     <div class="form__body">

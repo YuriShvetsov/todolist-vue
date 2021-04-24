@@ -4,7 +4,7 @@
   >
 
     <div class="form__header">
-      <div class="form__title title title_size_s title_color_red">List deleting</div>
+      <div class="form__title title title_size_s title_color_red">Deleting of list</div>
       <div class="form__desc text text_color_gray">Do you really want to delete the list along with all tasks?</div>
     </div>
 
