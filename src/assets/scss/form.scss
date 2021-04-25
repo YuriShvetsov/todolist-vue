@@ -52,6 +52,18 @@
   background-color: #f6f7f9;
 }
 
+.form__input_warn {
+  background-color: lighten($colorRed, 40%);
+  background-image: url(../images/warning.svg);
+  background-position: calc(100% - 5px) center;
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+}
+
+.form__input_warn:focus {
+  background-color: lighten($colorRed, 41%);
+}
+
 .form__control-button {
   min-width: 100px;
 }

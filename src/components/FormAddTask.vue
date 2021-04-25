@@ -15,7 +15,8 @@
           <input type="text"
             spellcheck="false"
             autocomplete="off"
-            class="form__input form__input_type_text"
+            important
+            class="form__input form__input_type_text js-input"
             v-model.trim="name"
           >
         </label>
@@ -55,26 +56,92 @@ export default {
   data() {
     return {
       name: '',
-      notes: ''
+      notes: '',
+      isMounted: false
     };
   },
+  computed: {
+    inputData() {
+      return {
+        name: this.name,
+        notes: this.notes
+      };
+    }
+  },
+  watch: {
+    inputData(newValue) {
+      if (!this.isMounted) return;
+
+      this.checkImportantInputs();
+    }
+  },
   methods: {
+    getInputs() {
+      return this.$el.querySelectorAll('.js-input');
+    },
+    getImportantInputs() {
+      const inputs = this.getInputs();
+      const importantInputs = Array.from(inputs).filter(input => input.hasAttribute('important'));
+
+      return importantInputs;
+    },
+    getEmptyImportantInputs() {
+      const importantInputs = this.getImportantInputs();
+
+      return importantInputs.filter(input => input.value.length === 0);
+    },
+    importantInputsAreFilled() {
+      const emptyImportantInputs = this.getEmptyImportantInputs();
+
+      return emptyImportantInputs.length === 0;
+    },
+    showWarnOnImportantInputs() {
+      const emptyImportantInputs = this.getEmptyImportantInputs();
+
+      emptyImportantInputs.forEach(input => {
+        input.classList.add('form__input_warn');
+      });
+    },
+    hideWarnOnImportantInput(input) {
+      input.classList.remove('form__input_warn');
+    },
+    focusOnFirstInput() {
+      const inputs = this.getInputs();
+
+      inputs[0].focus();
+    },
+    focusOnFirstEmptyImportantInput() {
+      const firstEmptyImportantInput = this.getEmptyImportantInputs()[0];
+
+      firstEmptyImportantInput.focus();
+    },
+    checkImportantInputs() {
+      const importantInputs = this.getImportantInputs();
+
+      importantInputs.forEach(input => {
+        if (input.value.length > 0) this.hideWarnOnImportantInput(input);
+      });
+    },
+
     emitSuccess() {
+      if (!this.importantInputsAreFilled()) {
+        this.showWarnOnImportantInputs();
+        this.focusOnFirstEmptyImportantInput();
+        return;
+      }
+
       this.$emit('success', {
         name: this.name,
         notes: this.notes
       });
-
-      this.clear();
     },
     emitCancel() {
       this.$emit('cancel');
-      this.clear();
-    },
-    clear() {
-      this.name = '';
-      this.notes = '';
     }
+  },
+  mounted() {
+    this.isMounted = true;
+    this.focusOnFirstInput();
   }
 }
 </script>

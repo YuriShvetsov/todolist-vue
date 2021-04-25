@@ -1,5 +1,5 @@
 <template>
-  <li class="task">
+  <li class="task" ref="task">
 
     <div class="task__container">
       <div class="task__done">
@@ -91,6 +91,14 @@ export default {
     }
   },
   methods: {
+    signal() {
+      this.$refs.task.classList.add('task_signal');
+
+      this.$refs.task.addEventListener('animationend', event => {
+        event.target.classList.remove('task_signal');
+      });
+    },
+
     // Modals
     openModalEditTask() {
       this.$refs.modalEditTask.open();
@@ -145,12 +153,37 @@ export default {
   transition: background-color 150ms ease-in-out;
 }
 
-.task:hover {
+.task::before {
+  content: '';
+  display: block;
+
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: scaleX(0.5);
+
   background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 5px;
+  opacity: 0;
+
+  pointer-events: none;
+  transition: opacity .15s ease-in-out, transform .35s ease-in-out;
+}
+
+.task:hover::before {
+  transform: scaleX(1);
+  opacity: 1;
 }
 
 .task_selected {
   background-color: rgba(235, 31, 31, 0.062);
+}
+
+.task_signal {
+  animation-fill-mode: both;
+  animation: signal 2s ease-in-out;
 }
 
 .task:not(:last-of-type) {
@@ -257,5 +290,14 @@ export default {
 .task:hover .task__menu-button {
   pointer-events: all;
   opacity: 1;
+}
+
+@keyframes signal {
+  0% {
+    background-color: lighten($colorViolet, 30%);
+  }
+  100% {
+    background-color: rgba(255, 255, 255, 0);
+  }
 }
 </style>

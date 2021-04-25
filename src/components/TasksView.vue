@@ -33,11 +33,13 @@
     </div>
 
     <div class="tasks-view__controls">
+
       <div class="tasks-view__controls-col">
         <button class="button button_type_text-icon button_icon_add"
           v-on:click="openModalAddTask"
         >Add task</button>
       </div>
+
       <div class="tasks-view__controls-col">
         <button class="button_color_red button button_type_text-icon button_icon_minus"
           v-bind:class="{ 'button_type_disabled': !haveCompletedTasks }"
@@ -45,12 +47,14 @@
           v-on:click="emitClearList"
         >Clear list</button>
       </div>
+      
     </div>
 
     <div class="tasks-view__body scrollable-wrapper">
-      <ul class="tasks-view__ul scrollable-child">
+      <ul class="tasks-view__ul scrollable-child" ref="content">
         <task
           v-for="task in tasks"
+          v-bind:ref=" `task_${ task.id.split('-').slice(-1) }` "
           v-bind:key="task.id"
           v-bind="task"
           v-on:edit="emitEditTask"
@@ -64,7 +68,7 @@
 
       <modal ref="modalAddTask">
         <form-add-task
-          v-on:success="emitAddTask"
+          v-on:success="emitAddTask($event), scrollToLastTask()"
           v-on:cancel="closeModalAddTask"
         ></form-add-task>
       </modal>
@@ -103,7 +107,6 @@ export default {
   emits: [
     'rename-list',
     'clear-list',
-    // 'sort-list',
     'delete-list',
     'add-task',
     'edit-task',
@@ -140,6 +143,11 @@ export default {
     },
     haveCompletedTasks() {
       return this.tasks.find(list => list.done);
+    },
+    lastTaskComponent() {
+      const id = this.tasks[this.tasks.length - 1].id;
+
+      return this.$refs['task_' + id.substr(5)];
     }
   },
   methods: {
@@ -173,6 +181,17 @@ export default {
     },
     closeMenu() {
       this.$refs.menu.close();
+    },
+
+    scrollToLastTask() {
+      this.$nextTick(() => {
+        const allTaskElements = this.$refs.content.querySelectorAll('.task');
+        const lastTaskElement = allTaskElements[allTaskElements.length - 1];
+
+        lastTaskElement.scrollIntoView();
+
+        this.lastTaskComponent.signal();
+      });
     },
 
     emitRenameList(name) {

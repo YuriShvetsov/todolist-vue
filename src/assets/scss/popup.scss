@@ -15,6 +15,11 @@
   z-index: 100;
 }
 
+.popup__content_pos_bottom {
+  top: unset;
+  bottom: 0;
+}
+
 .popup__content::before {
   content: '';
   display: block;

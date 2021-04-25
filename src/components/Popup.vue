@@ -1,13 +1,16 @@
 <template>
   <div class="popup"
-    ref="popup"
     v-on:mouseleave="close"
   >
 
     <slot name="opener"></slot>
     
-    <transition name="fade-translate">
+    <transition name="fade-translate"
+      v-on:enter="checkContentPosition"
+    >
       <div class="popup__content"
+        ref="content"
+
         v-show="isOpened"
       >
         <slot name="content"></slot>
@@ -33,23 +36,19 @@ export default {
       this.isOpened = false;
     },
 
-    onListeners() {
-      document.addEventListener('click', this.onDocumentClick);
-    },
-    removeListeners() {
-      document.removeEventListener('click', this.onDocumentClick);
-    },
-    onDocumentClick(event) {
-      const target = event.target;
+    checkContentPosition() {
+      const rect = this.$refs.content.getBoundingClientRect();
+      const toWinLowerBound = window.innerHeight - rect.bottom;
+      const minDistance = 40;
+      const maxDistance = rect.height + minDistance;
 
-      if (!this.$refs.popup.contains(target)) this.close();
+      if (toWinLowerBound < minDistance) {
+        this.$refs.content.classList.add('popup__content_pos_bottom');
+      }
+      else if (toWinLowerBound >= maxDistance) {
+        this.$refs.content.classList.remove('popup__content_pos_bottom');
+      }
     }
-  },
-  mounted() {
-    this.onListeners();
-  },
-  unmounted() {
-    this.removeListeners();
   }
 }
 </script>
