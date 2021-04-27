@@ -1,5 +1,5 @@
 <template>
-  <div class="tasks-view" v-if="dataIsValid">
+  <div class="tasks-view" v-if="dataValid">
 
     <div class="tasks-view__header">
 
@@ -53,8 +53,8 @@
     <div class="tasks-view__body scrollable-wrapper">
       <ul class="tasks-view__ul scrollable-child" ref="content">
         <task
+          class="js-task"
           v-for="task in tasks"
-          v-bind:ref=" `task_${ task.id.split('-').slice(-1) }` "
           v-bind:key="task.id"
           v-bind="task"
           v-on:edit="emitEditTask"
@@ -68,7 +68,7 @@
 
       <modal ref="modalAddTask">
         <form-add-task
-          v-on:success="emitAddTask($event), scrollToLastTask()"
+          v-on:success="emitAddTask"
           v-on:cancel="closeModalAddTask"
         ></form-add-task>
       </modal>
@@ -76,14 +76,14 @@
       <modal ref="modalRenameList">
         <form-rename-list
           v-bind:name="name"
-          v-on:success="emitRenameList($event), closeModalRenameList()"
+          v-on:success="emitRenameList"
           v-on:cancel="closeModalRenameList"
         ></form-rename-list>
       </modal>
 
       <modal ref="modalDeleteList">
         <form-delete-list
-          v-on:success="emitDeleteList(), closeModalDeleteList()"
+          v-on:success="emitDeleteList"
           v-on:cancel="closeModalDeleteList"
         ></form-delete-list>
       </modal>
@@ -134,7 +134,7 @@ export default {
     };
   },
   computed: {
-    dataIsValid() {
+    dataValid() {
       return (
         this.id &&
         this.name &&
@@ -143,11 +143,6 @@ export default {
     },
     haveCompletedTasks() {
       return this.tasks.find(list => list.done);
-    },
-    lastTaskComponent() {
-      const id = this.tasks[this.tasks.length - 1].id;
-
-      return this.$refs['task_' + id.substr(5)];
     }
   },
   methods: {
@@ -156,12 +151,6 @@ export default {
     },
     closeModalAddTask() {
       this.$refs.modalAddTask.close();
-    },
-    openModalEditTask() {
-      this.$refs.modalEditTask.open();
-    },
-    closeModalEditTask() {
-      this.$refs.modalEditTask.close();
     },
     openModalRenameList() {
       this.$refs.modalRenameList.open();
@@ -183,14 +172,22 @@ export default {
       this.$refs.menu.close();
     },
 
+    getTaskElements() {
+      return Array.from(this.$refs.content.querySelectorAll('.js-task'));
+    },
     scrollToLastTask() {
-      this.$nextTick(() => {
-        const allTaskElements = this.$refs.content.querySelectorAll('.task');
-        const lastTaskElement = allTaskElements[allTaskElements.length - 1];
+      const taskElements = this.getTaskElements();
+      const lastTaskElement = taskElements[taskElements.length - 1];
 
-        lastTaskElement.scrollIntoView();
+      // Scrolling to last task
+      lastTaskElement.scrollIntoView({
+        behavior: 'smooth'
+      });
 
-        this.lastTaskComponent.signal();
+      // Display of task animation
+      lastTaskElement.classList.add('anim-colorfull-violet');
+      lastTaskElement.addEventListener('animationend', e => {
+        e.target.classList.remove('anim-colorfull-violet');
       });
     },
 
@@ -199,9 +196,13 @@ export default {
         id: this.id,
         name
       });
+
+      this.closeModalRenameList();
     },
     emitDeleteList() {
       this.$emit('delete-list', this.id);
+
+      this.closeModalDeleteList();
     },
     emitClearList() {
       this.$emit('clear-list', this.id);
@@ -214,6 +215,7 @@ export default {
       });
 
       this.closeModalAddTask();
+      this.$nextTick(this.scrollToLastTask);
     },
     emitEditTask({ id, name, notes }) {
       this.$emit('edit-task', {

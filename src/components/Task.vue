@@ -146,11 +146,9 @@ export default {
   list-style: none;
 
   background-color: rgba(255, 255, 255, 0);
-  border: 2px solid rgba(255, 255, 255, 0);
   border-radius: 5px;
 
   user-select: none;
-  transition: background-color 150ms ease-in-out;
 }
 
 .task::before {
@@ -290,14 +288,5 @@ export default {
 .task:hover .task__menu-button {
   pointer-events: all;
   opacity: 1;
-}
-
-@keyframes signal {
-  0% {
-    background-color: lighten($colorViolet, 30%);
-  }
-  100% {
-    background-color: rgba(255, 255, 255, 0);
-  }
 }
 </style>

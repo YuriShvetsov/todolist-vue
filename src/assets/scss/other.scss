@@ -3,3 +3,17 @@
 .grabbing *::after {
   cursor: grabbing !important;
 }
+
+.anim-colorfull-violet {
+  animation-fill-mode: both;
+  animation: colorfull-violet 2.5s ease-in-out;
+}
+
+@keyframes colorfull-violet {
+  0% {
+    background-color: lighten($colorViolet, 30%);
+  }
+  100% {
+    background-color: rgba(255, 255, 255, 0);
+  }
+}
