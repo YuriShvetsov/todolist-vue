@@ -21,7 +21,9 @@
         </div>
       </div>
 
-      <button class="task__grab-button button button_type_icon button_icon_grabber">Grab</button>
+      <button class="task__replace-button button button_type_icon button_icon_grabber"
+        v-on:mousedown="emitStartMoving"
+      >Replace</button>
 
       <popup ref="menu" class="task__menu">
 
@@ -75,7 +77,7 @@ export default {
     FormEditTask,
     Popup
   },
-  emits: ['change-done', 'edit', 'delete'],
+  emits: ['change-done', 'edit', 'delete', 'start-moving'],
   props: {
     id: String,
     done: Boolean,
@@ -132,6 +134,9 @@ export default {
     },
     emitDelete() {
       this.$emit('delete', this.id);
+    },
+    emitStartMoving() {
+      this.$emit('start-moving', this.id);
     }
   }
 }
@@ -273,18 +278,14 @@ export default {
   white-space: pre-wrap;
 }
 
-.task__grab-button {
-  display: none;
-}
-
-.task__grab-button,
+.task__replace-button,
 .task__menu-button {
   opacity: 0;
   pointer-events: none;
   transition: opacity .15s ease-in-out;
 }
 
-.task:hover .task__grab-button,
+.task:hover .task__replace-button,
 .task:hover .task__menu-button {
   pointer-events: all;
   opacity: 1;

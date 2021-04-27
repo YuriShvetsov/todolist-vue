@@ -56,10 +56,12 @@
           class="js-task"
           v-for="task in tasks"
           v-bind:key="task.id"
+          v-bind:data-id="task.id"
           v-bind="task"
           v-on:edit="emitEditTask"
           v-on:change-done="emitChangeDone"
           v-on:delete="emitDeleteTask"
+          v-on:start-moving="onStartMovingTask"
         ></task>
       </ul>
     </div>
@@ -112,7 +114,7 @@ export default {
     'edit-task',
     'delete-task',
     'change-done-task',
-    // 'swap-tasks',
+    'move-task'
   ],
   components: {
     Task,
@@ -130,7 +132,11 @@ export default {
   },
   data() {
     return {
-
+      taskMoving: {
+        isStarted: false,
+        taskId: null,
+        toIndex: null
+      }
     };
   },
   computed: {
@@ -237,7 +243,53 @@ export default {
         listId: this.id,
         taskId: id
       });
+    },
+    emitMoveTask() {
+      this.$emit('move-task', {
+        listId: this.id,
+        taskId: this.taskMoving.taskId,
+        toIndex: this.taskMoving.toIndex
+      });
+    },
+
+    onStartMovingTask(id) {
+      this.taskMoving.isStarted = true;
+      this.taskMoving.taskId = id;
+    },
+    finishMovingTask(e) {
+      if (!this.taskMoving.isStarted) return;
+
+      const task = e.target.closest('.js-task');
+
+      if (!task) {
+        return this.resetTaskMoving();
+      }
+
+      const taskId = task.dataset.id;
+
+      if (taskId === this.taskMoving.taskId) {
+        return this.resetTaskMoving();
+      }
+
+      const index = this.tasks.findIndex(t => t.id === taskId);
+
+      this.taskMoving.toIndex = index;
+
+      this.emitMoveTask();
+      this.resetTaskMoving();
+    },
+    resetTaskMoving() {
+      this.taskMoving.isStarted = false;
+      this.taskMoving.taskId = null;
+      this.taskMoving.toIndex = null;
+    },
+
+    initListeners() {
+      document.addEventListener('mouseup', this.finishMovingTask);
     }
+  },
+  mounted() {
+    this.initListeners();
   }
 }
 </script>

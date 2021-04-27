@@ -32,6 +32,7 @@
             v-on:edit-task="onEditTask"
             v-on:change-done-task="onChangeDoneTask"
             v-on:delete-task="onDeleteTask"
+            v-on:move-task="onMoveTask"
           ></tasks-view>
         </div>
 
@@ -45,9 +46,8 @@
 <script>
 
 /*
-  1. Фокус в формах [done]
-  2. Обязательные поля в формах [done]
-  3. Сортировка задач
+  1. Сортировка задач
+  2. Сортировка списков
   ...
 */
 
@@ -277,8 +277,8 @@ export default {
 
       this.writeToLS();
     },
-    onSwapLists(a, b) {
-
+    onMoveList({ listId, toIndex }) {
+      // ...
 
       // this.writeToLS();
     },
@@ -318,8 +318,8 @@ export default {
 
       this.writeToLS();
     },
-    onSwapTasks(a, b) {
-
+    onMoveTask({ listId, taskId, toIndex }) {
+      // ...
 
       // this.writeToLS();
     },

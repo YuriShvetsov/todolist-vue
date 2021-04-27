@@ -37,7 +37,7 @@ import FormAddList from './FormAddList.vue';
 
 export default {
   name: 'lists-view',
-  emits: ['open-list', 'add-list'],
+  emits: ['open-list', 'add-list', 'move-list'],
   components: {
     ListItem,
     Modal,
