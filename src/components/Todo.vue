@@ -319,9 +319,14 @@ export default {
       this.writeToLS();
     },
     onMoveTask({ listId, taskId, toIndex }) {
-      // ...
+      const list = this.lists.find(l => l.id === listId);
+      const taskIndex = list.tasks.findIndex(t => t.id === taskId);
+      const taskCopy = this.getTargetFromProxy(list.tasks[taskIndex]);
 
-      // this.writeToLS();
+      list.tasks.splice(taskIndex, 1);
+      list.tasks.splice(toIndex, 0, taskCopy);
+
+      this.writeToLS();
     },
     onDeleteTask({ listId, taskId }) {
       const list = this.getList(listId);
@@ -334,6 +339,17 @@ export default {
 
     generateId() {
       return Math.random().toString(36).substr(2, 8);
+    },
+    getTargetFromProxy(proxy) {
+      const target = Object.assign({}, proxy);
+
+      for (let prop in target) {
+        if (typeof target[prop] === 'object') {
+          this.getTargetFromProxy(target[prop]);
+        }
+      }
+
+      return target;
     },
 
     setPlugToLists() {

@@ -51,6 +51,15 @@
     </div>
 
     <div class="tasks-view__body scrollable-wrapper">
+
+      <div class="scroll-trigger scroll-trigger_up"
+        ref="scrollUpTrigger"
+      ></div>
+
+      <div class="scroll-trigger scroll-trigger_down"
+        ref="scrollDownTrigger"
+      ></div>
+
       <ul class="tasks-view__ul scrollable-child" ref="content">
         <task
           class="js-task"
@@ -61,9 +70,14 @@
           v-on:edit="emitEditTask"
           v-on:change-done="emitChangeDone"
           v-on:delete="emitDeleteTask"
-          v-on:start-moving="onStartMovingTask"
+          v-on:start-moving="onStartTaskMoving"
         ></task>
       </ul>
+
+      <!-- <div class="tasks-view__scroll-trigger tasks-view__scroll-trigger_down"
+        ref="scrollDownTrigger"
+      ></div> -->
+
     </div>
 
     <div class="tasks-view__outer">
@@ -134,8 +148,12 @@ export default {
     return {
       taskMoving: {
         isStarted: false,
-        taskId: null,
-        toIndex: null
+        movingTaskId: null,
+        hoverTaskId: null
+      },
+      scrolling: {
+        isActive: false,
+        dir: 'down'
       }
     };
   },
@@ -181,6 +199,11 @@ export default {
     getTaskElements() {
       return Array.from(this.$refs.content.querySelectorAll('.js-task'));
     },
+    getTaskElement(id) {
+      const taskElements = this.getTaskElements();
+
+      return taskElements.find(t => t.dataset.id === id);
+    },
     scrollToLastTask() {
       const taskElements = this.getTaskElements();
       const lastTaskElement = taskElements[taskElements.length - 1];
@@ -195,6 +218,53 @@ export default {
       lastTaskElement.addEventListener('animationend', e => {
         e.target.classList.remove('anim-colorfull-violet');
       });
+    },
+    selectMovingTask() {
+      const movingTask = this.getTaskElement(this.taskMoving.movingTaskId);
+
+      movingTask.classList.add('task_selected');
+      document.body.classList.add('grabbing');
+    },
+    unSelectMovingTask() {
+      const movingTask = this.getTaskElement(this.taskMoving.movingTaskId);
+
+      movingTask.classList.remove('task_selected');
+      document.body.classList.remove('grabbing');
+    },
+    showPointerOnHoverTask() {
+      const hoverTask = this.getTaskElement(this.taskMoving.hoverTaskId);
+
+      hoverTask.classList.add('task_pointer');
+
+      const pointerClassName = hoverTaskIsAbove.call(this) ? '.js-top-pointer' : '.js-bottom-pointer';
+      const pointer = hoverTask.querySelector(pointerClassName);
+
+      pointer.classList.add('pointer_visible');
+
+      function hoverTaskIsAbove() {
+        const hoverTaskIndex = this.tasks.findIndex(t => t.id === this.taskMoving.hoverTaskId);
+        const movingTaskIndex = this.tasks.findIndex(t => t.id === this.taskMoving.movingTaskId);
+
+        return movingTaskIndex > hoverTaskIndex;
+      }
+    },
+    hidePointerOnHoverTask() {
+      const hoverTask = this.getTaskElement(this.taskMoving.hoverTaskId);
+      const topPointer = hoverTask.querySelector('.js-top-pointer');
+      const bottomPointer = hoverTask.querySelector('.js-bottom-pointer');
+
+      topPointer.classList.remove('pointer_visible');
+      bottomPointer.classList.remove('pointer_visible');
+
+      hoverTask.classList.remove('task_pointer');
+    },
+    activateScrollTriggers() {
+      this.$refs.scrollUpTrigger.classList.add('scroll-trigger_active');
+      this.$refs.scrollDownTrigger.classList.add('scroll-trigger_active');
+    },
+    unActivateScrollTriggers() {
+      this.$refs.scrollUpTrigger.classList.remove('scroll-trigger_active');
+      this.$refs.scrollDownTrigger.classList.remove('scroll-trigger_active');
     },
 
     emitRenameList(name) {
@@ -245,47 +315,133 @@ export default {
       });
     },
     emitMoveTask() {
-      this.$emit('move-task', {
+      const data = {
         listId: this.id,
-        taskId: this.taskMoving.taskId,
-        toIndex: this.taskMoving.toIndex
-      });
+        taskId: this.taskMoving.movingTaskId,
+        toIndex: this.tasks.findIndex(t => t.id === this.taskMoving.hoverTaskId)
+      };
+
+      this.$emit('move-task', data);
     },
 
-    onStartMovingTask(id) {
+    onStartTaskMoving(id) {
       this.taskMoving.isStarted = true;
-      this.taskMoving.taskId = id;
+      this.taskMoving.movingTaskId = id;
+
+      this.selectMovingTask();
+      this.activateScrollTriggers();
     },
-    finishMovingTask(e) {
+    continueTaskMoving(e) {
       if (!this.taskMoving.isStarted) return;
 
       const task = e.target.closest('.js-task');
+      const movingTaskId = this.taskMoving.movingTaskId;
+      const hoverTaskId = this.taskMoving.hoverTaskId;
 
-      if (!task) {
-        return this.resetTaskMoving();
+      if (!task && hoverTaskId) {
+        this.hidePointerOnHoverTask();
+        this.taskMoving.hoverTaskId = null;
+
+        return;
       }
 
-      const taskId = task.dataset.id;
-
-      if (taskId === this.taskMoving.taskId) {
-        return this.resetTaskMoving();
+      if (!task && !hoverTaskId) {
+        return;
       }
 
-      const index = this.tasks.findIndex(t => t.id === taskId);
+      const newTaskId = task.dataset.id;
 
-      this.taskMoving.toIndex = index;
+      if (newTaskId === movingTaskId && hoverTaskId) {
+        this.hidePointerOnHoverTask();
+        this.taskMoving.hoverTaskId = null;
 
-      this.emitMoveTask();
-      this.resetTaskMoving();
+        return;
+      }
+
+      if (newTaskId === movingTaskId && !hoverTaskId) {
+        return;
+      }
+
+      if (hoverTaskId && newTaskId !== hoverTaskId) {
+        this.hidePointerOnHoverTask();
+        this.taskMoving.hoverTaskId = newTaskId;
+        this.showPointerOnHoverTask();
+
+        return;
+      }
+
+      if (hoverTaskId && newTaskId === hoverTaskId) {
+        return;
+      }
+
+      if (!hoverTaskId) {
+        this.taskMoving.hoverTaskId = newTaskId;
+        this.showPointerOnHoverTask();
+        
+        return;
+      }
     },
-    resetTaskMoving() {
+    finishTaskMoving() {
+      if (!this.taskMoving.isStarted) return;
+
+      if (this.taskMoving.hoverTaskId) {
+        this.emitMoveTask();
+        this.hidePointerOnHoverTask();
+      }
+
+      this.unSelectMovingTask();
+      this.unActivateScrollTriggers();
+      this.cancelTaskMoving();
+    },
+    cancelTaskMoving() {
       this.taskMoving.isStarted = false;
-      this.taskMoving.taskId = null;
-      this.taskMoving.toIndex = null;
+      this.taskMoving.movingTaskId = null;
+      this.taskMoving.hoverTaskId = null;
+    },
+
+    startScrollUp() {
+      this.scrolling.isActive = true;
+
+      let curScrollPos = this.$refs.content.scrollTop;
+
+      let timer = setInterval(() => {
+        if (!this.scrolling.isActive || curScrollPos === 0) clearInterval(timer);
+
+        curScrollPos -= 1;
+
+        this.$refs.content.scrollTo(0, curScrollPos);
+      }, 5);
+    },
+    endScrollUp() {
+      this.scrolling.isActive = false;
+    },
+    startScrollDown() {
+      this.scrolling.isActive = true;
+
+      const maxScrollPos = this.$refs.content.scrollHeight - this.$refs.content.clientHeight;
+      let curScrollPos = this.$refs.content.scrollTop;
+
+      let timer = setInterval(() => {
+        if (!this.scrolling.isActive || curScrollPos === maxScrollPos) clearInterval(timer);
+
+        curScrollPos += 1;
+
+        this.$refs.content.scrollTo(0, curScrollPos);
+      }, 5);
+    },
+    endScrollDown() {
+      this.scrolling.isActive = false;
     },
 
     initListeners() {
-      document.addEventListener('mouseup', this.finishMovingTask);
+      document.addEventListener('mouseover', this.continueTaskMoving);
+      document.addEventListener('mouseup', this.finishTaskMoving);
+
+      this.$refs.scrollUpTrigger.addEventListener('mouseover', this.startScrollUp);
+      this.$refs.scrollUpTrigger.addEventListener('mouseout', this.endScrollUp);
+
+      this.$refs.scrollDownTrigger.addEventListener('mouseover', this.startScrollDown);
+      this.$refs.scrollDownTrigger.addEventListener('mouseout', this.endScrollDown);
     }
   },
   mounted() {
@@ -295,6 +451,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '../assets/scss/utils/vars.scss';
+
 .tasks-view {
   display: flex;
   flex-direction: column;
@@ -321,6 +479,43 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 12px 0;
+}
+
+.tasks-view__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+
+  height: 100%;
+
+  position: relative;
+}
+
+.scroll-trigger {
+  display: none;
+
+  width: 100%;
+  height: 10px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  // background-color: $colorGray;
+  background-color: rgba(255, 255, 255, 0);
+
+  z-index: 10;
+}
+
+.scroll-trigger_active {
+  display: block;
+}
+
+.scroll-trigger_up {
+  top: 0;
+}
+
+.scroll-trigger_down {
+  bottom: 0;
 }
 
 .tasks-view__ul {

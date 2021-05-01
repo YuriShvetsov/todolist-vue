@@ -52,6 +52,11 @@
 
     </div>
 
+    <div class="pointer pointer_pos_top js-top-pointer"></div>
+    <div class="pointer pointer_pos_bottom js-bottom-pointer"></div>
+
+    <div class="task__hover-bg"></div>
+
     <div class="task__outer">
       <modal ref="modalEditTask">
         <form-edit-task
@@ -93,14 +98,6 @@ export default {
     }
   },
   methods: {
-    signal() {
-      this.$refs.task.classList.add('task_signal');
-
-      this.$refs.task.addEventListener('animationend', event => {
-        event.target.classList.remove('task_signal');
-      });
-    },
-
     // Modals
     openModalEditTask() {
       this.$refs.modalEditTask.open();
@@ -146,6 +143,8 @@ export default {
 @import '../assets/scss/utils/vars.scss';
 
 .task {
+  margin: 2px 0;
+
   position: relative;
 
   list-style: none;
@@ -154,10 +153,19 @@ export default {
   border-radius: 5px;
 
   user-select: none;
+  transition: background-color .15s ease-in-out;
 }
 
-.task::before {
-  content: '';
+.task_selected {
+  background-color: lighten($colorViolet, 34%);
+}
+
+.task_signal {
+  animation-fill-mode: both;
+  animation: signal 2s ease-in-out;
+}
+
+.task__hover-bg{
   display: block;
 
   width: 100%;
@@ -175,26 +183,17 @@ export default {
   transition: opacity .15s ease-in-out, transform .35s ease-in-out;
 }
 
-.task:hover::before {
+.task:hover .task__hover-bg {
   transform: scaleX(1);
   opacity: 1;
 }
 
-.task_selected {
-  background-color: rgba(235, 31, 31, 0.062);
+.task_selected:hover .task__hover-bg {
+  opacity: 0;
 }
 
-.task_signal {
-  animation-fill-mode: both;
-  animation: signal 2s ease-in-out;
-}
-
-.task:not(:last-of-type) {
-  margin-bottom: 2px;
-}
-
-.task_selected {
-  border: 2px solid #efefef;
+.task_pointer:hover .task__hover-bg {
+  opacity: 0;
 }
 
 .task__container {
@@ -202,12 +201,6 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 5px 12px;
-}
-
-.task__outer {
-  position: absolute;
-  right: 0;
-  bottom: 100%;
 }
 
 .task__done {
@@ -230,22 +223,26 @@ export default {
   border-radius: 50%;
 
   cursor: pointer;
+  overflow: hidden;
   z-index: 1;
 }
 
 .task__done-label::before {
   content: "";
   display: block;
+
   width: 8px;
   height: 8px;
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%) scale(1.5);
+
   background-color: #fff;
   border-radius: 50%;
   box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
   opacity: 0;
+
   z-index: 2;
 }
 
@@ -254,10 +251,16 @@ export default {
   background: linear-gradient(#f16377,#ed344e);
   border: none;
   box-shadow: inset 0 2px 3px rgba(0, 0, 0, .2);
+
+  transition: background .15s ease-in-out;
 }
 
 .task__done-checkbox:checked + .task__done-label::before {
+  transform: translate(-50%,-50%) scale(1);
+
   opacity: 1;
+
+  transition: transform .15s ease-in-out;
 }
 
 .task__content {
@@ -289,5 +292,46 @@ export default {
 .task:hover .task__menu-button {
   pointer-events: all;
   opacity: 1;
+}
+
+.task_selected:hover .task__replace-button,
+.task_selected:hover .task__menu-button,
+.task_pointer:hover .task__replace-button,
+.task_pointer:hover .task__menu-button {
+  opacity: 0;
+}
+
+.pointer {
+  width: calc(100% - 10px);
+  height: 2px;
+
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background-color: lighten($colorViolet, 10%);
+  border-radius: 2px;
+  opacity: 0;
+
+  pointer-events: none;
+  transition: opacity .15s ease-in-out;
+}
+
+.pointer_visible {
+  opacity: 1;
+}
+
+.pointer_pos_top {
+  bottom: 100%;
+}
+
+.pointer_pos_bottom {
+  top: 100%;
+}
+
+.task__outer {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
 }
 </style>
