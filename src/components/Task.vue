@@ -314,11 +314,11 @@ export default {
   opacity: 0;
 
   pointer-events: none;
-  transition: opacity .15s ease-in-out;
 }
 
 .pointer_visible {
   opacity: 1;
+  transition: opacity .15s ease-in-out;
 }
 
 .pointer_pos_top {
