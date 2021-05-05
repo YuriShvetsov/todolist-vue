@@ -42,7 +42,7 @@
             </li>
             <li class="popup__action">
               <button class="popup__action-button button button_type_popup button_icon_delete button_color_red"
-                v-on:click="emitDelete(), closeMenu()"
+                v-on:click="emitRemove(), closeMenu()"
               >Delete</button>
             </li>
           </ul>
@@ -61,7 +61,7 @@
       <modal ref="modalEditTask">
         <form-edit-task
           v-bind="dataForEditing"
-          v-on:success="emitEdit($event), closeModalEditTask()"
+          v-on:success="onSuccessFormEditTask"
           v-on:cancel="closeModalEditTask"
         ></form-edit-task>
       </modal>
@@ -82,7 +82,7 @@ export default {
     FormEditTask,
     Popup
   },
-  emits: ['change-done', 'edit', 'delete', 'start-moving'],
+  emits: ['change-done', 'update', 'remove', 'start-moving'],
   props: {
     id: String,
     done: Boolean,
@@ -114,23 +114,23 @@ export default {
       this.$refs.menu.close();
     },
 
-    emitChangeDone(event) {
-      const done = event.target.checked;
-
-      this.$emit('change-done', {
-        id: this.id,
-        done
-      });
+    onSuccessFormEditTask(data) {
+      this.emitUpdate(data);
+      this.closeModalEditTask();
     },
-    emitEdit({ name, notes }) {
-      this.$emit('edit', {
+
+    emitChangeDone() {
+      this.$emit('change-done', this.id);
+    },
+    emitUpdate({ name, notes }) {
+      this.$emit('update', {
         id: this.id,
         name,
         notes
       });
     },
-    emitDelete() {
-      this.$emit('delete', this.id);
+    emitRemove() {
+      this.$emit('remove', this.id);
     },
     emitStartMoving() {
       this.$emit('start-moving', this.id);

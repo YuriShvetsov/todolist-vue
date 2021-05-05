@@ -1,4 +1,9 @@
 import { createApp } from 'vue'
-import Todo from './components/Todo.vue'
+import App from './components/App.vue'
+import store from './store';
 
-createApp(Todo).mount('#app')
+const app = createApp(App);
+
+app.use(store);
+
+app.mount('#app')

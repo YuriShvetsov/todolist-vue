@@ -3,31 +3,32 @@
     v-bind:class="{ 'list-item_active': isActive }"
   >
     <button class="list-item__button button"
-      v-on:click="emitOpen"
+      v-on:click="openList(id)"
     >
       <div class="list-item__name">{{ name }}</div>
-      <div class="list-item__count">{{ tasks.length }}</div>
+      <div class="list-item__count">{{ todos.length }}</div>
     </button>
   </li>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'list-item',
-  emits: ['open'],
   props: {
     id: String,
     name: String,
-    tasks: Array,
+    todos: Array,
     isActive: {
       type: Boolean,
       default: false
     }
   },
   methods: {
-    emitOpen() {
-      this.$emit('open', this.id);
-    }
+    ...mapActions([
+      'openList'
+    ])
   }
 }
 </script>

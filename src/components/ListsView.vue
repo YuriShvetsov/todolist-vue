@@ -15,14 +15,13 @@
           v-bind:key="list.id"
           v-bind="list"
           v-bind:isActive="listIsOpened(list.id)"
-          v-on:open="emitOpenList"
         />
       </ul>
     </div>
 
     <modal ref="modalAddList">
       <form-add-list
-        v-on:success="emitAddList($event), closeModalAddList()"
+        v-on:success="onSuccessFormAddList"
         v-on:cancel="closeModalAddList"
       ></form-add-list>
     </modal>
@@ -31,21 +30,25 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 import ListItem from './ListItem.vue';
 import Modal from './Modal.vue';
 import FormAddList from './FormAddList.vue';
 
 export default {
   name: 'lists-view',
-  emits: ['open-list', 'add-list', 'move-list'],
   components: {
     ListItem,
     Modal,
     FormAddList
   },
-  props: {
-    lists: Array,
-    openedListId: String
+  computed: {
+    ...mapGetters([
+      'openedList'
+    ]),
+    lists() {
+      return this.$store.state.lists;
+    },
   },
   methods: {
     openModalAddList() {
@@ -54,16 +57,16 @@ export default {
     closeModalAddList() {
       this.$refs.modalAddList.close();
     },
-
-    emitOpenList(id) {
-      this.$emit('open-list', id);
-    },
-    emitAddList(data) {
-      this.$emit('add-list', data);
-    },
-
+    ...mapActions([
+      'openList',
+      'addList'
+    ]),
     listIsOpened(id) {
-      return id === this.openedListId;
+      return id === this.openedList.id;
+    },
+    onSuccessFormAddList(name) {
+      this.addList(name);
+      this.closeModalAddList();
     }
   }
 }

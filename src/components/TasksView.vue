@@ -44,7 +44,7 @@
         <button class="button_color_red button button_type_text-icon button_icon_minus"
           v-bind:class="{ 'button_type_disabled': !haveCompletedTasks }"
           v-bind:disabled="!haveCompletedTasks"
-          v-on:click="emitClearList"
+          v-on:click="removeCompletedTodos(id)"
         >Clear list</button>
       </div>
       
@@ -63,20 +63,16 @@
       <ul class="tasks-view__ul scrollable-child" ref="content">
         <task
           class="js-task"
-          v-for="task in tasks"
-          v-bind:key="task.id"
-          v-bind:data-id="task.id"
-          v-bind="task"
-          v-on:edit="emitEditTask"
-          v-on:change-done="emitChangeDone"
-          v-on:delete="emitDeleteTask"
+          v-for="todo in todos"
+          v-bind:key="todo.id"
+          v-bind:data-id="todo.id"
+          v-bind="todo"
+          v-on:change-done="onChangeDoneTodo"
+          v-on:update="onUpdateTodo"
+          v-on:remove="onRemoveTodo"
           v-on:start-moving="onStartTaskMoving"
         ></task>
       </ul>
-
-      <!-- <div class="tasks-view__scroll-trigger tasks-view__scroll-trigger_down"
-        ref="scrollDownTrigger"
-      ></div> -->
 
     </div>
 
@@ -84,7 +80,7 @@
 
       <modal ref="modalAddTask">
         <form-add-task
-          v-on:success="emitAddTask"
+          v-on:success="onSuccessFormAddTask"
           v-on:cancel="closeModalAddTask"
         ></form-add-task>
       </modal>
@@ -92,14 +88,14 @@
       <modal ref="modalRenameList">
         <form-rename-list
           v-bind:name="name"
-          v-on:success="emitRenameList"
+          v-on:success="onSuccessFormRenameList"
           v-on:cancel="closeModalRenameList"
         ></form-rename-list>
       </modal>
 
       <modal ref="modalDeleteList">
         <form-delete-list
-          v-on:success="emitDeleteList"
+          v-on:success="onSuccessFormDeleteList"
           v-on:cancel="closeModalDeleteList"
         ></form-delete-list>
       </modal>
@@ -110,6 +106,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 import Task from './Task.vue';
 import Modal from './Modal.vue';
 import FormAddTask from './FormAddTask.vue';
@@ -120,16 +117,6 @@ import Popup from './Popup.vue';
 
 export default {
   name: 'tasks-view',
-  emits: [
-    'rename-list',
-    'clear-list',
-    'delete-list',
-    'add-task',
-    'edit-task',
-    'delete-task',
-    'change-done-task',
-    'move-task'
-  ],
   components: {
     Task,
     Modal,
@@ -139,11 +126,6 @@ export default {
     FormDeleteList,
     Popup
   },
-  props: {
-    id: String,
-    name: String,
-    tasks: Array
-  },
   data() {
     return {
       taskMoving: {
@@ -152,24 +134,43 @@ export default {
         hoverTaskId: null
       },
       scrolling: {
-        isActive: false,
-        dir: 'down'
+        isActive: false
       }
     };
   },
   computed: {
+    ...mapGetters([ 'openedList' ]),
+    id() {
+      return this.openedList.id;      
+    },
+    name() {
+      return this.openedList.name;
+    },
+    todos() {
+      return this.openedList.todos;
+    },
     dataValid() {
       return (
         this.id &&
         this.name &&
-        this.tasks
+        this.todos
       );
     },
     haveCompletedTasks() {
-      return this.tasks.find(list => list.done);
+      return this.todos.find(todo => todo.done);
     }
   },
   methods: {
+    ...mapActions([
+      'updateListName',
+      'removeCompletedTodos',
+      'removeList',
+      'addTodo',
+      'toggleTodo',
+      'updateTodo',
+      'removeTodo',
+      'moveTodo'
+    ]),
     openModalAddTask() {
       this.$refs.modalAddTask.open();
     },
@@ -187,6 +188,47 @@ export default {
     },
     closeModalDeleteList() {
       this.$refs.modalDeleteList.close();
+    },
+
+    onChangeDoneTodo(id) {
+      this.toggleTodo({
+        listId: this.id,
+        todoId: id
+      });
+    },
+    onUpdateTodo({ id, name, notes }) {
+      this.updateTodo({
+        listId: this.id,
+        todoId: id,
+        name,
+        notes
+      });
+    },
+    onRemoveTodo(id) {
+      this.removeTodo({
+        listId: this.id,
+        todoId: id
+      });
+    },
+    onSuccessFormAddTask({ name, notes }) {
+      this.addTodo({
+        id: this.id,
+        name,
+        notes
+      });
+      this.closeModalAddTask();
+      this.$nextTick(this.scrollToLastTask);
+    },
+    onSuccessFormRenameList(name) {
+      this.updateListName({
+        id: this.id,
+        name,
+      });
+      this.closeModalRenameList();
+    },
+    onSuccessFormDeleteList() {
+      this.removeList(this.id);
+      this.closeModalDeleteList();
     },
 
     toggleMenu() {
@@ -242,8 +284,8 @@ export default {
       pointer.classList.add('pointer_visible');
 
       function hoverTaskIsAbove() {
-        const hoverTaskIndex = this.tasks.findIndex(t => t.id === this.taskMoving.hoverTaskId);
-        const movingTaskIndex = this.tasks.findIndex(t => t.id === this.taskMoving.movingTaskId);
+        const hoverTaskIndex = this.todos.findIndex(t => t.id === this.taskMoving.hoverTaskId);
+        const movingTaskIndex = this.todos.findIndex(t => t.id === this.taskMoving.movingTaskId);
 
         return movingTaskIndex > hoverTaskIndex;
       }
@@ -266,64 +308,17 @@ export default {
       this.$refs.scrollUpTrigger.classList.remove('scroll-trigger_active');
       this.$refs.scrollDownTrigger.classList.remove('scroll-trigger_active');
     },
+    
+    initListeners() {
+      document.addEventListener('mouseover', this.continueTaskMoving);
+      document.addEventListener('mouseup', this.finishTaskMoving);
 
-    emitRenameList(name) {
-      this.$emit('rename-list', {
-        id: this.id,
-        name
-      });
+      this.$refs.scrollUpTrigger.addEventListener('mouseover', this.startScrollUp);
+      this.$refs.scrollUpTrigger.addEventListener('mouseout', this.endScrollUp);
 
-      this.closeModalRenameList();
+      this.$refs.scrollDownTrigger.addEventListener('mouseover', this.startScrollDown);
+      this.$refs.scrollDownTrigger.addEventListener('mouseout', this.endScrollDown);
     },
-    emitDeleteList() {
-      this.$emit('delete-list', this.id);
-
-      this.closeModalDeleteList();
-    },
-    emitClearList() {
-      this.$emit('clear-list', this.id);
-    },
-    emitAddTask(data) {
-      this.$emit('add-task', {
-        listId: this.id,
-        name: data.name,
-        notes: data.notes
-      });
-
-      this.closeModalAddTask();
-      this.$nextTick(this.scrollToLastTask);
-    },
-    emitEditTask({ id, name, notes }) {
-      this.$emit('edit-task', {
-        listId: this.id,
-        taskId: id,
-        name,
-        notes
-      });
-    },
-    emitChangeDone({ id, done }) {
-      this.$emit('change-done-task', {
-        listId: this.id,
-        taskId: id,
-        done
-      });
-    },
-    emitDeleteTask(id) {
-      this.$emit('delete-task', {
-        listId: this.id,
-        taskId: id
-      });
-    },
-    emitMoveTask() {
-      const data = {
-        listId: this.id,
-        taskId: this.taskMoving.movingTaskId,
-        toIndex: this.tasks.findIndex(t => t.id === this.taskMoving.hoverTaskId)
-      };
-
-      this.$emit('move-task', data);
-    },
-
     onStartTaskMoving(id) {
       this.taskMoving.isStarted = true;
       this.taskMoving.movingTaskId = id;
@@ -385,7 +380,11 @@ export default {
       if (!this.taskMoving.isStarted) return;
 
       if (this.taskMoving.hoverTaskId) {
-        this.emitMoveTask();
+        this.moveTodo({
+          listId: this.id,
+          todoId: this.taskMoving.movingTaskId,
+          targetTodoId: this.taskMoving.hoverTaskId
+        });
         this.hidePointerOnHoverTask();
       }
 
@@ -431,17 +430,6 @@ export default {
     },
     endScrollDown() {
       this.scrolling.isActive = false;
-    },
-
-    initListeners() {
-      document.addEventListener('mouseover', this.continueTaskMoving);
-      document.addEventListener('mouseup', this.finishTaskMoving);
-
-      this.$refs.scrollUpTrigger.addEventListener('mouseover', this.startScrollUp);
-      this.$refs.scrollUpTrigger.addEventListener('mouseout', this.endScrollUp);
-
-      this.$refs.scrollDownTrigger.addEventListener('mouseover', this.startScrollDown);
-      this.$refs.scrollDownTrigger.addEventListener('mouseout', this.endScrollDown);
     }
   },
   mounted() {
