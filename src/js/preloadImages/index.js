@@ -6,14 +6,14 @@ import images from './images.json';
   const path = '../../assets/images/';
   const template = document.createElement('template');
 
-  function loadImg(path) {
+  function addImg(path) {
     let img = new Image();
 
     img.src = path;
     template.append(img);
   }
 
-  imageNames.forEach(name => loadImg(path + name));
+  imageNames.forEach(name => addImg(path + name));
   document.body.append(template);
 
 }());
