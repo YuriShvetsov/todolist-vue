@@ -71,9 +71,9 @@
 </template>
 
 <script>
-import Modal from './Modal.vue';
-import FormEditTask from './FormEditTask.vue';
-import Popup from './Popup.vue';
+import Modal from './Modal.vue'
+import FormEditTask from './FormEditTask.vue'
+import Popup from './Popup.vue'
 
 export default {
   name: 'task',
@@ -94,46 +94,46 @@ export default {
       return {
         name: this.name,
         notes: this.notes
-      };
+      }
     }
   },
   methods: {
     // Modals
     openModalEditTask() {
-      this.$refs.modalEditTask.open();
+      this.$refs.modalEditTask.open()
     },
     closeModalEditTask() {
-      this.$refs.modalEditTask.close();
+      this.$refs.modalEditTask.close()
     },
 
     // Popups
     toggleMenu() {
-      this.$refs.menu.toggle();
+      this.$refs.menu.toggle()
     },
     closeMenu() {
-      this.$refs.menu.close();
+      this.$refs.menu.close()
     },
 
     onSuccessFormEditTask(data) {
-      this.emitUpdate(data);
-      this.closeModalEditTask();
+      this.emitUpdate(data)
+      this.closeModalEditTask()
     },
 
     emitChangeDone() {
-      this.$emit('change-done', this.id);
+      this.$emit('change-done', this.id)
     },
     emitUpdate({ name, notes }) {
       this.$emit('update', {
         id: this.id,
         name,
         notes
-      });
+      })
     },
     emitRemove() {
-      this.$emit('remove', this.id);
+      this.$emit('remove', this.id)
     },
     emitStartMoving() {
-      this.$emit('start-moving', this.id);
+      this.$emit('start-moving', this.id)
     }
   }
 }

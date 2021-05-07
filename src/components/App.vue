@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import ListsView from './ListsView.vue';
-import TasksView from './TasksView.vue';
+import ListsView from './ListsView.vue'
+import TasksView from './TasksView.vue'
 
 export default {
   name: 'app',
@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       currentDate: new Date()
-    };
+    }
   },
   computed: {
     currentDateString() {
@@ -56,7 +56,7 @@ export default {
         'Thursday',
         'Friday',
         'Saturday'
-      ];
+      ]
       const monthNames = [
         'January',
         'February',
@@ -70,23 +70,23 @@ export default {
         'October',
         'November',
         'December'
-      ];
+      ]
 
-      const day = this.currentDate.getDate();
-      const dayEnding = getDayEnding(day);
-      const weekday = weekdayNames[this.currentDate.getDay()];
-      const month = monthNames[this.currentDate.getMonth()];
+      const day = this.currentDate.getDate()
+      const dayEnding = getDayEnding(day)
+      const weekday = weekdayNames[this.currentDate.getDay()]
+      const month = monthNames[this.currentDate.getMonth()]
 
       function getDayEnding(num) {
-        if (num >= 11 && num <= 19) return 'th';
-        if (+num.toString().slice(-1) === 1) return 'st';
-        if (+num.toString().slice(-1) === 2) return 'nd';
-        if (+num.toString().slice(-1) === 3) return 'rd';
+        if (num >= 11 && num <= 19) return 'th'
+        if (+num.toString().slice(-1) === 1) return 'st'
+        if (+num.toString().slice(-1) === 2) return 'nd'
+        if (+num.toString().slice(-1) === 3) return 'rd'
 
-        return 'th';
+        return 'th'
       }
 
-      return `${ weekday }, ${ day }${ dayEnding } ${ month }`;
+      return `${ weekday }, ${ day }${ dayEnding } ${ month }`
     }
   }
 }

@@ -106,14 +106,14 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
-import Task from './Task.vue';
-import Modal from './Modal.vue';
-import FormAddTask from './FormAddTask.vue';
-import FormEditTask from './FormEditTask.vue';
-import FormRenameList from './FormRenameList.vue';
-import FormDeleteList from './FormDeleteList.vue';
-import Popup from './Popup.vue';
+import { mapGetters, mapActions } from 'vuex'
+import Task from './Task.vue'
+import Modal from './Modal.vue'
+import FormAddTask from './FormAddTask.vue'
+import FormEditTask from './FormEditTask.vue'
+import FormRenameList from './FormRenameList.vue'
+import FormDeleteList from './FormDeleteList.vue'
+import Popup from './Popup.vue'
 
 export default {
   name: 'tasks-view',
@@ -136,28 +136,28 @@ export default {
       scrolling: {
         isActive: false
       }
-    };
+    }
   },
   computed: {
     ...mapGetters([ 'openedList' ]),
     id() {
-      return this.openedList.id;      
+      return this.openedList.id
     },
     name() {
-      return this.openedList.name;
+      return this.openedList.name
     },
     todos() {
-      return this.openedList.todos;
+      return this.openedList.todos
     },
     dataValid() {
       return (
         this.id &&
         this.name &&
         this.todos
-      );
+      )
     },
     haveCompletedTasks() {
-      return this.todos.find(todo => todo.done);
+      return this.todos.find(todo => todo.done)
     }
   },
   methods: {
@@ -172,29 +172,29 @@ export default {
       'moveTodo'
     ]),
     openModalAddTask() {
-      this.$refs.modalAddTask.open();
+      this.$refs.modalAddTask.open()
     },
     closeModalAddTask() {
-      this.$refs.modalAddTask.close();
+      this.$refs.modalAddTask.close()
     },
     openModalRenameList() {
-      this.$refs.modalRenameList.open();
+      this.$refs.modalRenameList.open()
     },
     closeModalRenameList() {
-      this.$refs.modalRenameList.close();
+      this.$refs.modalRenameList.close()
     },
     openModalDeleteList() {
-      this.$refs.modalDeleteList.open();
+      this.$refs.modalDeleteList.open()
     },
     closeModalDeleteList() {
-      this.$refs.modalDeleteList.close();
+      this.$refs.modalDeleteList.close()
     },
 
     onChangeDoneTodo(id) {
       this.toggleTodo({
         listId: this.id,
         todoId: id
-      });
+      })
     },
     onUpdateTodo({ id, name, notes }) {
       this.updateTodo({
@@ -202,238 +202,238 @@ export default {
         todoId: id,
         name,
         notes
-      });
+      })
     },
     onRemoveTodo(id) {
       this.removeTodo({
         listId: this.id,
         todoId: id
-      });
+      })
     },
     onSuccessFormAddTask({ name, notes }) {
       this.addTodo({
         id: this.id,
         name,
         notes
-      });
-      this.closeModalAddTask();
-      this.$nextTick(this.scrollToLastTask);
+      })
+      this.closeModalAddTask()
+      this.$nextTick(this.scrollToLastTask)
     },
     onSuccessFormRenameList(name) {
       this.updateListName({
         id: this.id,
         name,
-      });
-      this.closeModalRenameList();
+      })
+      this.closeModalRenameList()
     },
     onSuccessFormDeleteList() {
-      this.removeList(this.id);
-      this.closeModalDeleteList();
+      this.removeList(this.id)
+      this.closeModalDeleteList()
     },
 
     toggleMenu() {
-      this.$refs.menu.toggle();
+      this.$refs.menu.toggle()
     },
     closeMenu() {
-      this.$refs.menu.close();
+      this.$refs.menu.close()
     },
 
     getTaskElements() {
-      return Array.from(this.$refs.content.querySelectorAll('.js-task'));
+      return Array.from(this.$refs.content.querySelectorAll('.js-task'))
     },
     getTaskElement(id) {
-      const taskElements = this.getTaskElements();
+      const taskElements = this.getTaskElements()
 
-      return taskElements.find(t => t.dataset.id === id);
+      return taskElements.find(t => t.dataset.id === id)
     },
     scrollToLastTask() {
       const taskElements = this.getTaskElements();
-      const lastTaskElement = taskElements[taskElements.length - 1];
+      const lastTaskElement = taskElements[taskElements.length - 1]
 
       // Scrolling to last task
       lastTaskElement.scrollIntoView({
         behavior: 'smooth'
-      });
+      })
 
       // Display of task animation
-      lastTaskElement.classList.add('anim-colorfull-violet');
+      lastTaskElement.classList.add('anim-colorfull-violet')
       lastTaskElement.addEventListener('animationend', e => {
-        e.target.classList.remove('anim-colorfull-violet');
+        e.target.classList.remove('anim-colorfull-violet')
       });
     },
     selectMovingTask() {
-      const movingTask = this.getTaskElement(this.taskMoving.movingTaskId);
+      const movingTask = this.getTaskElement(this.taskMoving.movingTaskId)
 
-      movingTask.classList.add('task_selected');
-      document.body.classList.add('grabbing');
+      movingTask.classList.add('task_selected')
+      document.body.classList.add('grabbing')
     },
     unSelectMovingTask() {
-      const movingTask = this.getTaskElement(this.taskMoving.movingTaskId);
+      const movingTask = this.getTaskElement(this.taskMoving.movingTaskId)
 
-      movingTask.classList.remove('task_selected');
-      document.body.classList.remove('grabbing');
+      movingTask.classList.remove('task_selected')
+      document.body.classList.remove('grabbing')
     },
     showPointerOnHoverTask() {
-      const hoverTask = this.getTaskElement(this.taskMoving.hoverTaskId);
+      const hoverTask = this.getTaskElement(this.taskMoving.hoverTaskId)
 
-      hoverTask.classList.add('task_pointer');
+      hoverTask.classList.add('task_pointer')
 
-      const pointerClassName = hoverTaskIsAbove.call(this) ? '.js-top-pointer' : '.js-bottom-pointer';
-      const pointer = hoverTask.querySelector(pointerClassName);
+      const pointerClassName = hoverTaskIsAbove.call(this) ? '.js-top-pointer' : '.js-bottom-pointer'
+      const pointer = hoverTask.querySelector(pointerClassName)
 
-      pointer.classList.add('pointer_visible');
+      pointer.classList.add('pointer_visible')
 
       function hoverTaskIsAbove() {
-        const hoverTaskIndex = this.todos.findIndex(t => t.id === this.taskMoving.hoverTaskId);
-        const movingTaskIndex = this.todos.findIndex(t => t.id === this.taskMoving.movingTaskId);
+        const hoverTaskIndex = this.todos.findIndex(t => t.id === this.taskMoving.hoverTaskId)
+        const movingTaskIndex = this.todos.findIndex(t => t.id === this.taskMoving.movingTaskId)
 
-        return movingTaskIndex > hoverTaskIndex;
+        return movingTaskIndex > hoverTaskIndex
       }
     },
     hidePointerOnHoverTask() {
-      const hoverTask = this.getTaskElement(this.taskMoving.hoverTaskId);
-      const topPointer = hoverTask.querySelector('.js-top-pointer');
-      const bottomPointer = hoverTask.querySelector('.js-bottom-pointer');
+      const hoverTask = this.getTaskElement(this.taskMoving.hoverTaskId)
+      const topPointer = hoverTask.querySelector('.js-top-pointer')
+      const bottomPointer = hoverTask.querySelector('.js-bottom-pointer')
 
-      topPointer.classList.remove('pointer_visible');
-      bottomPointer.classList.remove('pointer_visible');
+      topPointer.classList.remove('pointer_visible')
+      bottomPointer.classList.remove('pointer_visible')
 
-      hoverTask.classList.remove('task_pointer');
+      hoverTask.classList.remove('task_pointer')
     },
     activateScrollTriggers() {
-      this.$refs.scrollUpTrigger.classList.add('scroll-trigger_active');
-      this.$refs.scrollDownTrigger.classList.add('scroll-trigger_active');
+      this.$refs.scrollUpTrigger.classList.add('scroll-trigger_active')
+      this.$refs.scrollDownTrigger.classList.add('scroll-trigger_active')
     },
     unActivateScrollTriggers() {
-      this.$refs.scrollUpTrigger.classList.remove('scroll-trigger_active');
-      this.$refs.scrollDownTrigger.classList.remove('scroll-trigger_active');
+      this.$refs.scrollUpTrigger.classList.remove('scroll-trigger_active')
+      this.$refs.scrollDownTrigger.classList.remove('scroll-trigger_active')
     },
     
     initListeners() {
-      document.addEventListener('mouseover', this.continueTaskMoving);
-      document.addEventListener('mouseup', this.finishTaskMoving);
+      document.addEventListener('mouseover', this.continueTaskMoving)
+      document.addEventListener('mouseup', this.finishTaskMoving)
 
-      this.$refs.scrollUpTrigger.addEventListener('mouseover', this.startScrollUp);
-      this.$refs.scrollUpTrigger.addEventListener('mouseout', this.endScrollUp);
+      this.$refs.scrollUpTrigger.addEventListener('mouseover', this.startScrollUp)
+      this.$refs.scrollUpTrigger.addEventListener('mouseout', this.endScrollUp)
 
-      this.$refs.scrollDownTrigger.addEventListener('mouseover', this.startScrollDown);
-      this.$refs.scrollDownTrigger.addEventListener('mouseout', this.endScrollDown);
+      this.$refs.scrollDownTrigger.addEventListener('mouseover', this.startScrollDown)
+      this.$refs.scrollDownTrigger.addEventListener('mouseout', this.endScrollDown)
     },
     onStartTaskMoving(id) {
-      this.taskMoving.isStarted = true;
-      this.taskMoving.movingTaskId = id;
+      this.taskMoving.isStarted = true
+      this.taskMoving.movingTaskId = id
 
-      this.selectMovingTask();
-      this.activateScrollTriggers();
+      this.selectMovingTask()
+      this.activateScrollTriggers()
     },
     continueTaskMoving(e) {
-      if (!this.taskMoving.isStarted) return;
+      if (!this.taskMoving.isStarted) return
 
-      const task = e.target.closest('.js-task');
-      const movingTaskId = this.taskMoving.movingTaskId;
-      const hoverTaskId = this.taskMoving.hoverTaskId;
+      const task = e.target.closest('.js-task')
+      const movingTaskId = this.taskMoving.movingTaskId
+      const hoverTaskId = this.taskMoving.hoverTaskId
 
       if (!task && hoverTaskId) {
-        this.hidePointerOnHoverTask();
-        this.taskMoving.hoverTaskId = null;
+        this.hidePointerOnHoverTask()
+        this.taskMoving.hoverTaskId = null
 
-        return;
+        return
       }
 
       if (!task && !hoverTaskId) {
-        return;
+        return
       }
 
-      const newTaskId = task.dataset.id;
+      const newTaskId = task.dataset.id
 
       if (newTaskId === movingTaskId && hoverTaskId) {
-        this.hidePointerOnHoverTask();
-        this.taskMoving.hoverTaskId = null;
+        this.hidePointerOnHoverTask()
+        this.taskMoving.hoverTaskId = null
 
-        return;
+        return
       }
 
       if (newTaskId === movingTaskId && !hoverTaskId) {
-        return;
+        return
       }
 
       if (hoverTaskId && newTaskId !== hoverTaskId) {
-        this.hidePointerOnHoverTask();
+        this.hidePointerOnHoverTask()
         this.taskMoving.hoverTaskId = newTaskId;
-        this.showPointerOnHoverTask();
+        this.showPointerOnHoverTask()
 
-        return;
+        return
       }
 
       if (hoverTaskId && newTaskId === hoverTaskId) {
-        return;
+        return
       }
 
       if (!hoverTaskId) {
-        this.taskMoving.hoverTaskId = newTaskId;
-        this.showPointerOnHoverTask();
+        this.taskMoving.hoverTaskId = newTaskId
+        this.showPointerOnHoverTask()
         
-        return;
+        return
       }
     },
     finishTaskMoving() {
-      if (!this.taskMoving.isStarted) return;
+      if (!this.taskMoving.isStarted) return
 
       if (this.taskMoving.hoverTaskId) {
         this.moveTodo({
           listId: this.id,
           todoId: this.taskMoving.movingTaskId,
           targetTodoId: this.taskMoving.hoverTaskId
-        });
-        this.hidePointerOnHoverTask();
+        })
+        this.hidePointerOnHoverTask()
       }
 
-      this.unSelectMovingTask();
-      this.unActivateScrollTriggers();
-      this.cancelTaskMoving();
+      this.unSelectMovingTask()
+      this.unActivateScrollTriggers()
+      this.cancelTaskMoving()
     },
     cancelTaskMoving() {
-      this.taskMoving.isStarted = false;
-      this.taskMoving.movingTaskId = null;
-      this.taskMoving.hoverTaskId = null;
+      this.taskMoving.isStarted = false
+      this.taskMoving.movingTaskId = null
+      this.taskMoving.hoverTaskId = null
     },
 
     startScrollUp() {
-      this.scrolling.isActive = true;
+      this.scrolling.isActive = true
 
-      let curScrollPos = this.$refs.content.scrollTop;
+      let curScrollPos = this.$refs.content.scrollTop
 
       let timer = setInterval(() => {
-        if (!this.scrolling.isActive || curScrollPos === 0) clearInterval(timer);
+        if (!this.scrolling.isActive || curScrollPos === 0) clearInterval(timer)
 
-        curScrollPos -= 1;
+        curScrollPos -= 1
 
-        this.$refs.content.scrollTo(0, curScrollPos);
+        this.$refs.content.scrollTo(0, curScrollPos)
       }, 5);
     },
     endScrollUp() {
-      this.scrolling.isActive = false;
+      this.scrolling.isActive = false
     },
     startScrollDown() {
-      this.scrolling.isActive = true;
+      this.scrolling.isActive = true
 
-      const maxScrollPos = this.$refs.content.scrollHeight - this.$refs.content.clientHeight;
-      let curScrollPos = this.$refs.content.scrollTop;
+      const maxScrollPos = this.$refs.content.scrollHeight - this.$refs.content.clientHeight
+      let curScrollPos = this.$refs.content.scrollTop
 
       let timer = setInterval(() => {
-        if (!this.scrolling.isActive || curScrollPos === maxScrollPos) clearInterval(timer);
+        if (!this.scrolling.isActive || curScrollPos === maxScrollPos) clearInterval(timer)
 
-        curScrollPos += 1;
+        curScrollPos += 1
 
-        this.$refs.content.scrollTo(0, curScrollPos);
-      }, 5);
+        this.$refs.content.scrollTo(0, curScrollPos)
+      }, 5)
     },
     endScrollDown() {
-      this.scrolling.isActive = false;
+      this.scrolling.isActive = false
     }
   },
   mounted() {
-    this.initListeners();
+    this.initListeners()
   }
 }
 </script>

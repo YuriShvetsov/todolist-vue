@@ -30,10 +30,10 @@ export default {
   emits: ['success', 'cancel'],
   methods: {
     emitSuccess() {
-      this.$emit('success');
+      this.$emit('success')
     },
     emitCancel() {
-      this.$emit('cancel');
+      this.$emit('cancel')
     }
   }
 }

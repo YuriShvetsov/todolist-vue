@@ -1,4 +1,4 @@
-import _ from 'lodash';
-import './assets/scss/main.scss';
-import './app';
-import './js';
+import _ from 'lodash'
+import './assets/scss/main.scss'
+import './app'
+import './js'

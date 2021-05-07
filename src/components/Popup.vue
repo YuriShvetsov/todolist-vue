@@ -26,27 +26,27 @@ export default {
   data() {
     return {
       isOpened: false
-    };
+    }
   },
   methods: {
     toggle() {
-      this.isOpened = !this.isOpened;
+      this.isOpened = !this.isOpened
     },
     close() {
-      this.isOpened = false;
+      this.isOpened = false
     },
 
     checkContentPosition() {
-      const rect = this.$refs.content.getBoundingClientRect();
-      const toWinLowerBound = window.innerHeight - rect.bottom;
-      const minDistance = 40;
-      const maxDistance = rect.height + minDistance;
+      const rect = this.$refs.content.getBoundingClientRect()
+      const toWinLowerBound = window.innerHeight - rect.bottom
+      const minDistance = 40
+      const maxDistance = rect.height + minDistance
 
       if (toWinLowerBound < minDistance) {
-        this.$refs.content.classList.add('popup__content_pos_bottom');
+        this.$refs.content.classList.add('popup__content_pos_bottom')
       }
       else if (toWinLowerBound >= maxDistance) {
-        this.$refs.content.classList.remove('popup__content_pos_bottom');
+        this.$refs.content.classList.remove('popup__content_pos_bottom')
       }
     }
   }

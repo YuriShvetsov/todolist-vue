@@ -67,94 +67,94 @@ export default {
       _name: '',
       _notes: '',
       isMounted: false
-    };
+    }
   },
   computed: {
     inputData() {
       return {
         name: this._name,
         notes: this._notes
-      };
+      }
     }
   },
   watch: {
     inputData(newValue) {
-      if (!this.isMounted) return;
+      if (!this.isMounted) return
 
-      this.checkImportantInputs();
+      this.checkImportantInputs()
     }
   },
   methods: {
     getInputs() {
-      return this.$el.querySelectorAll('.js-input');
+      return this.$el.querySelectorAll('.js-input')
     },
     getImportantInputs() {
-      const inputs = this.getInputs();
-      const importantInputs = Array.from(inputs).filter(input => input.hasAttribute('important'));
+      const inputs = this.getInputs()
+      const importantInputs = Array.from(inputs).filter(input => input.hasAttribute('important'))
 
-      return importantInputs;
+      return importantInputs
     },
     getEmptyImportantInputs() {
-      const importantInputs = this.getImportantInputs();
+      const importantInputs = this.getImportantInputs()
 
-      return importantInputs.filter(input => input.value.length === 0);
+      return importantInputs.filter(input => input.value.length === 0)
     },
     importantInputsAreFilled() {
-      const emptyImportantInputs = this.getEmptyImportantInputs();
+      const emptyImportantInputs = this.getEmptyImportantInputs()
 
-      return emptyImportantInputs.length === 0;
+      return emptyImportantInputs.length === 0
     },
     showWarnOnImportantInputs() {
-      const emptyImportantInputs = this.getEmptyImportantInputs();
+      const emptyImportantInputs = this.getEmptyImportantInputs()
 
       emptyImportantInputs.forEach(input => {
-        input.classList.add('form__input_warn');
+        input.classList.add('form__input_warn')
       });
     },
     hideWarnOnImportantInput(input) {
-      input.classList.remove('form__input_warn');
+      input.classList.remove('form__input_warn')
     },
     focusOnFirstInput() {
-      const inputs = this.getInputs();
+      const inputs = this.getInputs()
 
-      inputs[0].focus();
+      inputs[0].focus()
     },
     focusOnFirstEmptyImportantInput() {
-      const firstEmptyImportantInput = this.getEmptyImportantInputs()[0];
+      const firstEmptyImportantInput = this.getEmptyImportantInputs()[0]
 
-      firstEmptyImportantInput.focus();
+      firstEmptyImportantInput.focus()
     },
     checkImportantInputs() {
-      const importantInputs = this.getImportantInputs();
+      const importantInputs = this.getImportantInputs()
 
       importantInputs.forEach(input => {
-        if (input.value.length > 0) this.hideWarnOnImportantInput(input);
+        if (input.value.length > 0) this.hideWarnOnImportantInput(input)
       });
     },
 
     emitSuccess() {
       if (!this.importantInputsAreFilled()) {
-        this.showWarnOnImportantInputs();
-        this.focusOnFirstEmptyImportantInput();
-        return;
+        this.showWarnOnImportantInputs()
+        this.focusOnFirstEmptyImportantInput()
+        return
       }
 
       this.$emit('success', {
         name: this._name,
         notes: this._notes
-      });
+      })
     },
     emitCancel() {
-      this.$emit('cancel');
+      this.$emit('cancel')
     }
   },
   created() {
-    this._name = this.name;
-    this._notes = this.notes;
+    this._name = this.name
+    this._notes = this.notes
   },
   mounted() {
-    this.isMounted = true;
-    this.focusOnFirstInput();
+    this.isMounted = true
+    this.focusOnFirstInput()
   }
 }
 </script>

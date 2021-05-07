@@ -25,16 +25,16 @@ export default {
   data() {
     return {
       isVisible: false
-    };
+    }
   },
   methods: {
     open() {
-      this.isVisible = true;
-      document.body.style.overflow = 'hidden';
+      this.isVisible = true
+      document.body.style.overflow = 'hidden'
     },
     close() {
-      this.isVisible = false;
-      document.body.style.overflow = 'auto';
+      this.isVisible = false
+      document.body.style.overflow = 'auto'
     }
   }
 }

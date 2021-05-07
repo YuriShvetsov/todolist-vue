@@ -30,10 +30,10 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
-import ListItem from './ListItem.vue';
-import Modal from './Modal.vue';
-import FormAddList from './FormAddList.vue';
+import { mapGetters, mapActions } from 'vuex'
+import ListItem from './ListItem.vue'
+import Modal from './Modal.vue'
+import FormAddList from './FormAddList.vue'
 
 export default {
   name: 'lists-view',
@@ -47,26 +47,26 @@ export default {
       'openedList'
     ]),
     lists() {
-      return this.$store.state.lists;
+      return this.$store.state.lists
     },
   },
   methods: {
     openModalAddList() {
-      this.$refs.modalAddList.open();
+      this.$refs.modalAddList.open()
     },
     closeModalAddList() {
-      this.$refs.modalAddList.close();
+      this.$refs.modalAddList.close()
     },
     ...mapActions([
       'openList',
       'addList'
     ]),
     listIsOpened(id) {
-      return id === this.openedList.id;
+      return id === this.openedList.id
     },
     onSuccessFormAddList(name) {
-      this.addList(name);
-      this.closeModalAddList();
+      this.addList(name)
+      this.closeModalAddList()
     }
   }
 }
