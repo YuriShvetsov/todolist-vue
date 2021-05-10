@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import ListItem from './ListItem.vue'
 import Modal from './Modal.vue'
 import FormAddList from './FormAddList.vue'
@@ -43,12 +43,12 @@ export default {
     FormAddList
   },
   computed: {
+    ...mapState([
+      'lists'
+    ]),
     ...mapGetters([
       'openedList'
-    ]),
-    lists() {
-      return this.$store.state.lists
-    },
+    ])
   },
   methods: {
     openModalAddList() {
