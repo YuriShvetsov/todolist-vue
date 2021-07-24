@@ -132,7 +132,11 @@ export default {
     emitRemove() {
       this.$emit('remove', this.id)
     },
-    emitStartMoving() {
+    emitStartMoving(e) {
+      const leftButton = (e.which === 1) ? true : false
+
+      if (!leftButton) return
+
       this.$emit('start-moving', this.id)
     }
   }
