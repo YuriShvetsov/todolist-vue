@@ -114,6 +114,19 @@ const store = createStore({
       todo.name = name
       todo.notes = notes
     },
+    DUBLICATE_TODO(state, { listId, todoId }) {
+      const list = state.lists.find(list => list.id === listId)
+      const todo = list.todos.find(todo => todo.id === todoId)
+      const insertIndex = list.todos.findIndex(todo => todo.id === todoId) + 1
+      const copy = {
+        id: generateId('todo'),
+        done: false,
+        name: todo.name,
+        notes: todo.notes
+      }
+
+      list.todos.splice(insertIndex, 0, copy)
+    },
     REMOVE_TODO(state, { listId, todoId }) {
       const list = state.lists.find(list => list.id === listId)
       const todoIndex = list.todos.findIndex(todo => todo.id === todoId)
@@ -196,6 +209,10 @@ const store = createStore({
     },
     updateTodo({ commit, dispatch }, payload) {
       commit('UPDATE_TODO', payload)
+      dispatch('writeToLS')
+    },
+    dublicateTodo({ commit, dispatch }, payload) {
+      commit('DUBLICATE_TODO', payload)
       dispatch('writeToLS')
     },
     removeTodo({ commit, dispatch }, payload) {

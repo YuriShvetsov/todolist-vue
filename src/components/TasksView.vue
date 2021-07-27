@@ -71,6 +71,7 @@
           v-on:update="onUpdateTodo"
           v-on:remove="onRemoveTodo"
           v-on:start-moving="onStartTaskMoving"
+          v-on:dublicate="onDublicateTodo"
         ></task>
       </ul>
 
@@ -169,7 +170,8 @@ export default {
       'toggleTodo',
       'updateTodo',
       'removeTodo',
-      'moveTodo'
+      'moveTodo',
+      'dublicateTodo'
     ]),
     openModalAddTask() {
       this.$refs.modalAddTask.open()
@@ -202,6 +204,12 @@ export default {
         todoId: id,
         name,
         notes
+      })
+    },
+    onDublicateTodo(id) {
+      this.dublicateTodo({
+        listId: this.id,
+        todoId: id
       })
     },
     onRemoveTodo(id) {

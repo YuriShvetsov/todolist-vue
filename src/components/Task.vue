@@ -41,6 +41,11 @@
               >Edit</button>
             </li>
             <li class="popup__action">
+              <button class="popup__action-button button button_type_popup button_icon_copy"
+                v-on:click="emitDublicate"
+              >Dublicate</button>
+            </li>
+            <li class="popup__action">
               <button class="popup__action-button button button_type_popup button_icon_delete button_color_red"
                 v-on:click="emitRemove(), closeMenu()"
               >Delete</button>
@@ -82,7 +87,7 @@ export default {
     FormEditTask,
     Popup
   },
-  emits: ['change-done', 'update', 'remove', 'start-moving'],
+  emits: ['change-done', 'update', 'remove', 'start-moving', 'dublicate'],
   props: {
     id: String,
     done: Boolean,
@@ -128,6 +133,9 @@ export default {
         name,
         notes
       })
+    },
+    emitDublicate() {
+      this.$emit('dublicate', this.id)
     },
     emitRemove() {
       this.$emit('remove', this.id)
