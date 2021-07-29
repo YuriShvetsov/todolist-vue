@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import catchFocus from '../js/catchFocus'
+
 export default {
   name: 'form-rename-list',
   emits: ['success', 'cancel'],
@@ -134,6 +136,7 @@ export default {
   mounted() {
     this.isMounted = true
     this.focusOnFirstInput()
+    catchFocus(this.$el)
   }
 }
 </script>

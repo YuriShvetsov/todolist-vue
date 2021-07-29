@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import catchFocus from '../js/catchFocus'
+
 export default {
   name: 'form-delete-list',
   emits: ['success', 'cancel'],
@@ -34,7 +36,14 @@ export default {
     },
     emitCancel() {
       this.$emit('cancel')
+    },
+    focusOnCancelButton() {
+      this.$el.elements[1].focus()
     }
+  },
+  mounted() {
+    this.focusOnCancelButton()
+    catchFocus(this.$el)
   }
 }
 </script>

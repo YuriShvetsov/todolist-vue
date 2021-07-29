@@ -22,12 +22,16 @@
       </div>
 
       <div class="form__row form__row_controls">
-        <button class="form__control-button button button_type_submit"
-          v-on:click="emitSuccess"
-        >OK</button>
-        <button class="form__control-button button"
+        <input class="form__control-button button button_type_submit"
+          type="submit"
+          v-on:click.prevent="emitSuccess"
+          value="OK"
+        >
+        <input class="form__control-button button"
+          type="button"
           v-on:click="emitCancel"
-        >Cancel</button>
+          value="Cancel"
+        >
       </div>
 
     </div>
@@ -36,6 +40,8 @@
 </template>
 
 <script>
+import catchFocus from '../js/catchFocus'
+
 export default {
   name: 'form-add-list',
   emits: ['success', 'cancel'],
@@ -118,11 +124,32 @@ export default {
     },
     emitCancel() {
       this.$emit('cancel')
-    }
+    },
+    // catchFocus() {
+    //   const inputs = this.$el.elements
+    //   const firstInput = inputs[0]
+    //   const lastInput = inputs[inputs.length - 1]
+
+    //   lastInput.addEventListener('keydown', e => {
+    //     if (!e.shiftKey && e.key === 'Tab') {
+    //       firstInput.focus()
+    //       e.preventDefault()
+    //     }
+    //   })
+
+    //   firstInput.addEventListener('keydown', e => {
+    //     if (e.shiftKey && e.key === 'Tab') {
+    //       lastInput.focus()
+    //       e.preventDefault()
+    //     }
+    //   })
+    // }
   },
   mounted() {
     this.isMounted = true
     this.focusOnFirstInput()
+    // this.catchFocus()
+    catchFocus(this.$el)
   }
 }
 </script>
