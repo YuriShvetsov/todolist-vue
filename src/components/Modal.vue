@@ -69,9 +69,15 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
-  background-color: rgba(0,0,0,.25);
+  background-color: rgba(31,31,31,.22);
   z-index: 101;
+  cursor: pointer;
   pointer-events: all;
+  transition: background-color 300ms ease-out;
+}
+
+.modal__overlay:hover {
+  background-color: rgba(31,31,31,0.32);
 }
 
 .fade-enter-active {
