@@ -124,31 +124,11 @@ export default {
     },
     emitCancel() {
       this.$emit('cancel')
-    },
-    // catchFocus() {
-    //   const inputs = this.$el.elements
-    //   const firstInput = inputs[0]
-    //   const lastInput = inputs[inputs.length - 1]
-
-    //   lastInput.addEventListener('keydown', e => {
-    //     if (!e.shiftKey && e.key === 'Tab') {
-    //       firstInput.focus()
-    //       e.preventDefault()
-    //     }
-    //   })
-
-    //   firstInput.addEventListener('keydown', e => {
-    //     if (e.shiftKey && e.key === 'Tab') {
-    //       lastInput.focus()
-    //       e.preventDefault()
-    //     }
-    //   })
-    // }
+    }
   },
   mounted() {
     this.isMounted = true
     this.focusOnFirstInput()
-    // this.catchFocus()
     catchFocus(this.$el)
   }
 }
