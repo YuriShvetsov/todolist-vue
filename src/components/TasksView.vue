@@ -496,7 +496,6 @@ export default {
   left: 50%;
   transform: translateX(-50%);
 
-  // background-color: $colorGray;
   background-color: rgba(255, 255, 255, 0);
 
   z-index: 10;
