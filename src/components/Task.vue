@@ -277,12 +277,14 @@ export default {
 
 .task__content {
   width: 100%;
+  margin-right: 12px;
 }
 
 .task__name {
   font-size: 14px;
   font-weight: bold;
   color: $colorBlack;
+  word-break: break-all;
 }
 
 .task__notes-pre {
@@ -291,6 +293,7 @@ export default {
   font-size: 13px;
   color: $colorGray;
   white-space: pre-wrap;
+  word-break: break-all;
 }
 
 .task__replace-button,
