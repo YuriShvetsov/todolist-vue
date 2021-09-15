@@ -29,6 +29,9 @@ const store = createStore({
   getters: {
     openedList(state) {
       return state.lists.find(list => list.id === state.openedListId)
+    },
+    lists(state) {
+      return state.lists
     }
   },
   mutations: {

@@ -12,6 +12,12 @@
           <div class="app__logo-icon"></div>
         </div>
 
+        <div class="app__data-actions">
+          <a class="app__data-link" :href="dataJSON" download="todos.json" title="Download data">
+            <img class="app__data-link-img" src="../assets/images/export.svg" alt="Export">
+          </a>
+        </div>
+
       </div>
 
       <div class="app__body">
@@ -32,6 +38,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import ListsView from './ListsView.vue'
 import TasksView from './TasksView.vue'
 
@@ -47,6 +55,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['lists']),
     currentDateString() {
       const weekdayNames = [
         'Sunday',
@@ -87,6 +96,9 @@ export default {
       }
 
       return `${ weekday }, ${ day }${ dayEnding } ${ month }`
+    },
+    dataJSON() {
+      return `data:text/json;charset=utf-8,${ encodeURIComponent(JSON.stringify(this.lists)) }`
     }
   }
 }
@@ -95,7 +107,7 @@ export default {
 <style lang="scss" scoped>
 @import '../assets/scss/utils/vars.scss';
 
-.app * {
+.app {
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
 }
@@ -171,6 +183,40 @@ export default {
   background-repeat: no-repeat;
   background-size: 30px 30px;
   filter: drop-shadow(0 3px 3px rgba(0,0,0,.15));
+}
+
+.app__data-actions {
+  display: flex;
+  align-items: center;
+}
+
+.app__data-link {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  text-indent: -999px;
+  border-radius: 50%;
+
+  overflow: hidden;
+  transition: opacity 0.15s ease;
+}
+
+.app__data-link-img {
+  width: 14px;
+  height: 14px;
+  margin: 0 auto;
+
+  display: block;
+
+  object-fit: contain;
+}
+
+.app__data-link:hover {
+  opacity: 0.8;
 }
 
 .app__body {
