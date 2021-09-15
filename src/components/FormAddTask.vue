@@ -36,6 +36,16 @@
         </label>
       </div>
 
+      <div class="form__row form__row_no-label">
+        <label class="form__label">
+          <span class="form__label-name">Priority</span>
+          <CustomSelect
+            v-model="priority"
+            v-bind="{ options: ['Low', 'Middle', 'High'] }"  
+          ></CustomSelect>
+        </label>
+      </div>
+
       <div class="form__row form__row_controls">
         <button class="form__control-button button button_type_submit"
           v-on:click="emitSuccess"
@@ -51,14 +61,20 @@
 
 <script>
 import catchFocus from '../js/catchFocus'
+import CustomSelect from './CustomSelect.vue'
 
 export default {
   name: 'form-add-task',
+  components: {
+    CustomSelect
+  },
   emits: ['success', 'cancel'],
   data() {
     return {
       name: '',
       notes: '',
+      priority: '',
+
       isMounted: false
     }
   },
@@ -66,7 +82,8 @@ export default {
     inputData() {
       return {
         name: this.name,
-        notes: this.notes
+        notes: this.notes,
+        priority: this.priority
       }
     }
   },
@@ -134,7 +151,8 @@ export default {
 
       this.$emit('success', {
         name: this.name,
-        notes: this.notes
+        notes: this.notes,
+        priority: this.priority
       })
     },
     emitCancel() {

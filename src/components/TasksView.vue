@@ -198,12 +198,13 @@ export default {
         todoId: id
       })
     },
-    onUpdateTodo({ id, name, notes }) {
+    onUpdateTodo({ id, name, notes, priority }) {
       this.updateTodo({
         listId: this.id,
         todoId: id,
         name,
-        notes
+        notes,
+        priority
       })
     },
     onDublicateTodo(id) {
@@ -218,11 +219,12 @@ export default {
         todoId: id
       })
     },
-    onSuccessFormAddTask({ name, notes }) {
+    onSuccessFormAddTask({ name, notes, priority }) {
       this.addTodo({
         id: this.id,
         name,
-        notes
+        notes,
+        priority
       })
       this.closeModalAddTask()
       this.$nextTick(this.scrollToLastTask)

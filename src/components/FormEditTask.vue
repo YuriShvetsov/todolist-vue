@@ -36,6 +36,16 @@
         </label>
       </div>
 
+      <div class="form__row form__row_no-label">
+        <label class="form__label">
+          <span class="form__label-name">Priority</span>
+          <CustomSelect
+            v-model="_priority"
+            v-bind="{ options: ['Low', 'Middle', 'High'] }"  
+          ></CustomSelect>
+        </label>
+      </div>
+
       <div class="form__row form__row_controls">
         <button
           class="form__control-button button button_type_submit"
@@ -62,12 +72,14 @@ export default {
     id: String,
     done: Boolean,
     name: String,
-    notes: String
+    notes: String,
+    priority: String
   },
   data() {
     return {
       _name: '',
       _notes: '',
+      _priority: '',
       isMounted: false
     }
   },
@@ -75,7 +87,8 @@ export default {
     inputData() {
       return {
         name: this._name,
-        notes: this._notes
+        notes: this._notes,
+        priority: this._priority
       }
     }
   },
@@ -143,7 +156,8 @@ export default {
 
       this.$emit('success', {
         name: this._name,
-        notes: this._notes
+        notes: this._notes,
+        priority: this._priority
       })
     },
     emitCancel() {
@@ -153,6 +167,7 @@ export default {
   created() {
     this._name = this.name
     this._notes = this.notes
+    this._priority = this.priority
   },
   mounted() {
     this.isMounted = true

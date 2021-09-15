@@ -90,13 +90,14 @@ const store = createStore({
 
       state.lists.splice(listIndex, 1)
     },
-    ADD_TODO(state, { id, name, notes }) {
+    ADD_TODO(state, { id, name, notes, priority }) {
       const list = state.lists.find(l => l.id === id)
       const newTodo = {
         id: generateId('todo'),
         done: false,
         name,
-        notes
+        notes,
+        priority
       }
 
       list.todos.push(newTodo)
@@ -107,12 +108,13 @@ const store = createStore({
 
       todo.done = !todo.done
     },
-    UPDATE_TODO(state, { listId, todoId, name, notes }) {
+    UPDATE_TODO(state, { listId, todoId, name, notes, priority }) {
       const list = state.lists.find(list => list.id === listId)
       const todo = list.todos.find(todo => todo.id === todoId)
 
       todo.name = name
       todo.notes = notes
+      todo.priority = priority
     },
     DUBLICATE_TODO(state, { listId, todoId }) {
       const list = state.lists.find(list => list.id === listId)

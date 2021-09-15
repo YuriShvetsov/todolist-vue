@@ -19,6 +19,9 @@
         <div class="task__notes">
           <pre class="task__notes-pre">{{ notes }}</pre>
         </div>
+        <div class="task__priority"
+          v-bind:class="hasPriority"
+        >{{ priority }}</div>
       </div>
 
       <button class="task__replace-button button button_type_icon button_icon_grabber"
@@ -89,17 +92,39 @@ export default {
   },
   emits: ['change-done', 'update', 'remove', 'start-moving', 'dublicate'],
   props: {
-    id: String,
-    done: Boolean,
-    name: String,
-    notes: String
+    id: {
+      type: String,
+      default: Date.now().toString()
+    },
+    done: {
+      type: Boolean,
+      default: false
+    },
+    priority: {
+      type: String,
+      default: ''
+    },
+    name: {
+      type: String,
+      default: 'Default name'
+    },
+    notes: {
+      type: String,
+      default: ''
+    }
   },
   computed: {
     dataForEditing() {
       return {
         name: this.name,
-        notes: this.notes
+        notes: this.notes,
+        priority: this.priority
       }
+    },
+    hasPriority() {
+      if (this.priority === '') return
+
+      return `task__priority_visible task__priority_${ this.priority.toLowerCase() }`
     }
   },
   methods: {
@@ -127,11 +152,12 @@ export default {
     emitChangeDone() {
       this.$emit('change-done', this.id)
     },
-    emitUpdate({ name, notes }) {
+    emitUpdate({ name, notes, priority }) {
       this.$emit('update', {
         id: this.id,
         name,
-        notes
+        notes,
+        priority
       })
     },
     emitDublicate() {
@@ -299,6 +325,35 @@ export default {
   color: $colorGray;
   white-space: pre-wrap;
   word-break: break-all;
+}
+
+.task__priority {
+  display: none;
+  margin-top: 5px;
+  padding: 2px 7px;
+  font-size: 10px;
+  text-transform: uppercase;
+  border-radius: 3px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.02);
+}
+
+.task__priority_visible {
+  display: inline-block;
+}
+
+.task__priority_low {
+  color: lighten($colorGreenCold, 10%);
+  background-color: lighten($colorGreenCold, 48%);
+}
+
+.task__priority_middle {
+  color: lighten($colorBlue, 10%);
+  background-color: lighten($colorBlue, 40%);
+}
+
+.task__priority_high {
+  color: lighten($colorRed, 10%);
+  background-color: lighten($colorRed, 40%);
 }
 
 .task__replace-button,
