@@ -324,7 +324,7 @@ export default {
   font-size: 13px;
   color: $colorGray;
   white-space: pre-wrap;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .task__priority {
