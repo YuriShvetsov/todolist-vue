@@ -14,7 +14,7 @@
         ></label>
       </div>
 
-      <div class="task__content">
+      <div class="task__content" v-bind:class="{ 'task__content_half-hidden': done }">
         <div class="task__name">{{ name }}</div>
         <div class="task__notes">
           <pre class="task__notes-pre">{{ notes }}</pre>
@@ -278,6 +278,11 @@ export default {
 .task__content {
   width: 100%;
   margin-right: 12px;
+  transition: opacity .15s ease-out;
+}
+
+.task__content_half-hidden {
+  opacity: 0.5;
 }
 
 .task__name {
