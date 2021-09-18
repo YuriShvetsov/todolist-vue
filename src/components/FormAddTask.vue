@@ -18,6 +18,7 @@
             important
             class="form__input form__input_type_text js-input"
             v-model.trim="name"
+            v-on:keydown="disableSubmitAtEnter"
           >
         </label>
       </div>
@@ -25,14 +26,11 @@
       <div class="form__row">
         <label class="form__label">
           <span class="form__label-name">Notes</span>
-          <textarea
-            rows="5"
-            spellcheck="false"
-            autocomplete="off"
-            class="form__input form__textarea"
-            v-model.trim="notes"
-          >
-          </textarea>
+          <TextBox
+            v-bind:spellcheck="false"
+            v-bind:rows="5"
+            v-model="notes"
+          ></TextBox>
         </label>
       </div>
 
@@ -62,11 +60,13 @@
 <script>
 import catchFocus from '../js/catchFocus'
 import CustomSelect from './CustomSelect.vue'
+import TextBox from './TextBox.vue'
 
 export default {
   name: 'form-add-task',
   components: {
-    CustomSelect
+    CustomSelect,
+    TextBox
   },
   emits: ['success', 'cancel'],
   data() {
@@ -140,6 +140,9 @@ export default {
       importantInputs.forEach(input => {
         if (input.value.length > 0) this.hideWarnOnImportantInput(input)
       });
+    },
+    disableSubmitAtEnter(e) {
+      if (e.key === 'Enter') e.preventDefault()
     },
 
     emitSuccess() {
