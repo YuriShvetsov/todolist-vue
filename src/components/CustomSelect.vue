@@ -1,5 +1,7 @@
 <template>
-  <div class="select">
+  <div class="select"
+    v-bind:class="{ 'select_open': isOpened }"
+  >
 
     <input class="select__input" 
       readonly
@@ -14,14 +16,16 @@
         <li class="select__option select__option_empty"
           empty
           tabindex="0"
-          v-on:click="clear"
+          v-on:click="onClickEmptyOption"
+          v-on:keydown="onKeydownEmptyOption"
+          ref="firstOption"
         >{{ emptyOption }}</li>
         <li class="select__option"
           tabindex="0"
           v-for="(option, id) in options"
           v-bind:key="id"
           v-bind:data-value="option"
-          v-on:click="choose"
+          v-on:click="onClickOption"
           v-on:keydown="onKeydownOption"
         >{{ option }}</li>
       </ul>
@@ -44,6 +48,7 @@ export default {
   data() {
     return {
       emptyOption: 'Not chosed',
+      isOpened: false
     }
   },
   computed: {
@@ -58,43 +63,50 @@ export default {
   },
   methods: {
     toggle() {
-      this.$el.classList.toggle('select_open')
-
-      if (!this.$el.classList.contains('select_open')) {
-        setTimeout(() => this.$refs.input.blur())  
-      }
+      this.isOpened = !this.isOpened
+    },
+    open() {
+      this.isOpened = true
     },
     close() {
-      this.$el.classList.remove('select_open')
+      this.isOpened = false
     },
 
-    clear() {
+    onClickEmptyOption() {
       this.value = ''
-      this.$refs.input.blur()
-      setTimeout(() => this.$refs.input.blur())
     },
-    choose(event) {
-      const optionValue = event.target.dataset.value
-
-      this.value = optionValue
-      setTimeout(() => this.$refs.input.blur())
+    onClickOption(event) {
+      this.value = event.target.dataset.value
     },
-
     onKeydownInput(e) {
       if (e.key === 'Enter') {
         e.preventDefault()
         this.toggle()
+        
+        if (this.isOpened) {
+          this.$refs.firstOption.focus()
+        }
+      }
+    },
+    onKeydownEmptyOption(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        this.value = ''
+        this.close()
+        this.$refs.input.focus()
       }
     },
     onKeydownOption(e) {
       if (e.key === 'Enter') {
+        e.preventDefault()
         this.value = e.target.dataset.value
         this.close()
+        this.$refs.input.focus()
       }
     },
     handlerDocumentClick() {
       document.body.addEventListener('click', event => {
-        if (!event.target.closest('.select')) {
+        if (!this.$el.contains(event.target) && !event.target.closest('.select')) {
           this.close()
         }
       })
@@ -187,6 +199,7 @@ export default {
 
   background-color: rgba(255, 255, 255, 0);
   border-radius: 3px;
+  outline: none;
 
   user-select: none;
   cursor: pointer;

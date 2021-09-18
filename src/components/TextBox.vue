@@ -7,7 +7,6 @@
       tabindex="0"
       v-bind:spellcheck="spellcheck"
       v-on:input="onInput"
-      v-on:keydown="onKeydown"
       ref="input"
     >{{ _value }}</div>
 
@@ -49,24 +48,6 @@ export default {
     onInput(event) {
       this.value = this.getStrFromContentEditable(event.target)
     },
-    onKeydown(event) {
-      if (event.key === 'Enter' && !event.ctrlKey) {
-        event.preventDefault()
-        return
-      }
-      
-      if (event.key === 'Enter' && event.ctrlKey) {
-        const div = document.createElement('div')
-        const br = document.createElement('br')
-
-        div.append(br)
-
-        const range = window.getSelection().getRangeAt(0)
-        range.deleteContents()
-        range.insertNode(div)
-        range.collapse()
-      }
-    },
 
     getStrFromContentEditable(el) {
       const html = el.innerHTML
@@ -77,7 +58,7 @@ export default {
       const restLines = divListWithoutBr.map(div => div.replace(/(<\/?[^>]+>)/gi, ''))
       const allLines = firstLine === '' ? restLines : [firstLine].concat(restLines)
 
-      return allLines.map(line => line.replace(/&nbsp;/gi, ' ')).join('\r\n')
+      return allLines.map(line => line.replace(/&nbsp;/gi, ' ')).join('\n')
     },
     setHeight() {
       const lineHeight = 20

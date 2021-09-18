@@ -18,7 +18,7 @@
             important
             class="form__input form__input_type_text js-input"
             v-model.trim="name"
-            v-on:keydown="disableSubmitAtEnter"
+            v-on:keydown="onKeydownInput"
           >
         </label>
       </div>
@@ -141,7 +141,7 @@ export default {
         if (input.value.length > 0) this.hideWarnOnImportantInput(input)
       });
     },
-    disableSubmitAtEnter(e) {
+    onKeydownInput(e) {
       if (e.key === 'Enter') e.preventDefault()
     },
 
