@@ -6,19 +6,23 @@
       v-model="value"
       v-bind:placeholder="emptyOption"
       v-on:click="toggle"
+      v-on:keydown="onKeydownInput"
       ref="input"
     >
     <div class="select__options">
       <ul class="select__option-list">
         <li class="select__option select__option_empty"
           empty
+          tabindex="0"
           v-on:click="clear"
         >{{ emptyOption }}</li>
         <li class="select__option"
+          tabindex="0"
           v-for="(option, id) in options"
           v-bind:key="id"
           v-bind:data-value="option"
           v-on:click="choose"
+          v-on:keydown="onKeydownOption"
         >{{ option }}</li>
       </ul>
     </div>
@@ -74,6 +78,19 @@ export default {
 
       this.value = optionValue
       setTimeout(() => this.$refs.input.blur())
+    },
+
+    onKeydownInput(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        this.toggle()
+      }
+    },
+    onKeydownOption(e) {
+      if (e.key === 'Enter') {
+        this.value = e.target.dataset.value
+        this.close()
+      }
     },
     handlerDocumentClick() {
       document.body.addEventListener('click', event => {
@@ -176,8 +193,12 @@ export default {
   transition: background-color .15s ease-out;
 }
 
+.select__option:focus {
+  background-color: rgba(0,0,0,.02);
+}
+
 .select__option:hover {
-  background-color: rgba(0,0,0,.02);;
+  background-color: rgba(0,0,0,.02);
 }
 
 .select__option_empty {
