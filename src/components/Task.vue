@@ -47,7 +47,7 @@
             </li>
             <li class="popup__action">
               <button class="popup__action-button button button_type_popup button_icon_copy"
-                v-on:click="emitDublicate"
+                v-on:click="emitDublicate(), closeMenu()"
               >Dublicate</button>
             </li>
             <li class="popup__action">

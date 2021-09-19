@@ -4,15 +4,15 @@
   cursor: grabbing !important;
 }
 
-.anim-move-bottom {
+.anim-add-task {
   animation-fill-mode: both;
-  animation: move-bottom .15s ease-in-out;
+  animation: add-task .15s ease-in-out;
 }
 
-@keyframes move-bottom {
+@keyframes add-task {
   0% {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-15px);
   }
   50% {
     opacity: 1;

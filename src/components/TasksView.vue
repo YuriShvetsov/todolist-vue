@@ -266,9 +266,9 @@ export default {
       })
 
       // Display of task animation
-      lastTaskElement.classList.add('anim-move-bottom')
+      lastTaskElement.classList.add('anim-add-task')
       lastTaskElement.addEventListener('animationend', e => {
-        e.target.classList.remove('anim-move-bottom')
+        e.target.classList.remove('anim-add-task')
       });
     },
     selectMovingTask() {
