@@ -192,6 +192,7 @@ export default {
 
   user-select: none;
   transition: background-color .15s ease-in-out;
+  z-index: 1;
 }
 
 .task_selected {
@@ -211,14 +212,15 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
-  transform: scaleX(0.5);
+  transform: scaleX(0.4);
 
-  background-color: rgba(0, 0, 0, 0.02);
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.012), rgba(0, 0, 0, 0.02));
   border-radius: 5px;
   opacity: 0;
 
   pointer-events: none;
   transition: opacity .15s ease-in-out, transform .35s ease-in-out;
+  z-index: -1;
 }
 
 .task:hover .task__hover-bg {

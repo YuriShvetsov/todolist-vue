@@ -1,5 +1,5 @@
 <template>
-  <div class="tasks-view" v-if="dataValid">
+  <div class="tasks-view" v-if="dataIsValid">
 
     <div class="tasks-view__header">
 
@@ -150,7 +150,7 @@ export default {
     todos() {
       return this.openedList.todos
     },
-    dataValid() {
+    dataIsValid() {
       return (
         this.id &&
         this.name &&
@@ -266,9 +266,9 @@ export default {
       })
 
       // Display of task animation
-      lastTaskElement.classList.add('anim-colorfull-violet')
+      lastTaskElement.classList.add('anim-move-bottom')
       lastTaskElement.addEventListener('animationend', e => {
-        e.target.classList.remove('anim-colorfull-violet')
+        e.target.classList.remove('anim-move-bottom')
       });
     },
     selectMovingTask() {
