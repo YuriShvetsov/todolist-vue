@@ -12,13 +12,14 @@
       ref="input"
     >
     <div class="select__options">
-      <ul class="select__option-list">
+      <ul class="select__option-list" ref="optionsList"
+        v-on:keydown="onKeydownOptionsList"
+      >
         <li class="select__option select__option_empty"
           empty
           tabindex="0"
           v-on:click="onClickEmptyOption"
           v-on:keydown="onKeydownEmptyOption"
-          ref="firstOption"
         >{{ emptyOption }}</li>
         <li class="select__option"
           tabindex="0"
@@ -48,7 +49,8 @@ export default {
   data() {
     return {
       emptyOption: 'Not chosed',
-      isOpened: false
+      isOpened: false,
+      focusedOptionIndex: 0
     }
   },
   computed: {
@@ -62,6 +64,12 @@ export default {
     }
   },
   methods: {
+    initFocusedOptionIndex() {
+      if (this.value === '') return
+
+      this.focusedOptionIndex = this.options.findIndex(option => option === this.value) + 1
+    },
+
     toggle() {
       this.isOpened = !this.isOpened
     },
@@ -70,6 +78,9 @@ export default {
     },
     close() {
       this.isOpened = false
+    },
+    getOptionByIndex(index) {
+      return this.$refs.optionsList.querySelectorAll('li')[index]
     },
 
     onClickEmptyOption() {
@@ -81,11 +92,20 @@ export default {
     onKeydownInput(e) {
       if (e.key === 'Enter') {
         e.preventDefault()
-        this.toggle()
+        this.open()
         
         if (this.isOpened) {
-          this.$refs.firstOption.focus()
+          this.$nextTick(() => this.getOptionByIndex(this.focusedOptionIndex).focus())
         }
+      }
+    },
+    onKeydownOptionsList(e) {
+      if (e.key === 'ArrowDown' && this.focusedOptionIndex < this.options.length) {
+        this.focusedOptionIndex++
+        this.getOptionByIndex(this.focusedOptionIndex).focus()
+      } else if (e.key === 'ArrowUp' && this.focusedOptionIndex > 0) {
+        this.focusedOptionIndex--
+        this.getOptionByIndex(this.focusedOptionIndex).focus()
       }
     },
     onKeydownEmptyOption(e) {
@@ -111,6 +131,9 @@ export default {
         }
       })
     }
+  },
+  created() {
+    this.initFocusedOptionIndex()
   },
   mounted() {
     this.handlerDocumentClick()
