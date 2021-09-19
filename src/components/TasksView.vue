@@ -212,6 +212,16 @@ export default {
         listId: this.id,
         todoId: id
       })
+
+      this.$nextTick(() => {
+        const copyTodoIndex = this.todos.findIndex(todo => todo.id === id) + 1
+        const taskCopy = this.getTaskElements()[copyTodoIndex]
+
+        taskCopy.classList.add('anim-duplicate-task')
+        taskCopy.addEventListener('animationend', e => {
+          e.target.classList.remove('anim-duplicate-task')
+        });
+      })
     },
     onRemoveTodo(id) {
       this.removeTodo({
