@@ -40,15 +40,17 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '../assets/scss/utils/vars.scss';
+
 .modal {
   width: 100vw;
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 100;
   pointer-events: none;
+  z-index: map-get($zLayers, "zIndexModal");
 }
 .modal__container {
   min-width: 420px;

@@ -114,6 +114,8 @@ export default {
     },
 
     emitSuccess() {
+      if (!this.isMounted) return
+
       if (!this.importantInputsFilled()) {
         this.showWarnOnImportantInputs()
         this.focusOnFirstEmptyImportantInput()
@@ -121,9 +123,13 @@ export default {
       }
 
       this.$emit('success', this.name)
+      this.isMounted = false
     },
     emitCancel() {
+      if (!this.isMounted) return
+
       this.$emit('cancel')
+      this.isMounted = false
     }
   },
   mounted() {

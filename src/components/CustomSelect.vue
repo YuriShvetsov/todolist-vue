@@ -124,7 +124,6 @@ export default {
 .select {
   width: 100%;
   position: relative;
-  z-index: $zIndexModal;
 }
 
 .select__input {
@@ -165,7 +164,6 @@ export default {
   border-radius: 3px;
 
   overflow-y: auto;
-  z-index: $zIndexModal;
 }
 
 .select__options::before {

@@ -12,11 +12,24 @@ $colorGreenCold: #1ad1a1;
 $colorGreenWarm: #6cd500;
 $colorBgLight: #f0f0f5;
 $colorBgLightest: #f5f5fa;
+$transparent: rgba(255, 255, 255, 0);
 
 $mainBg: linear-gradient(135deg,#4d42fe,#07ccff);
 
 $font_main: 'Open Sans', sans-serif;
 $font_logo: 'Galada', sans-serif;
 
-$zIndexPage: 500;
-$zIndexModal: 1000;
+// z-index
+$zLayersNames: ("Page", "Popup", "Modal");
+$zLayers: ();
+
+$i: 0;
+@each $layerName in $zLayersNames {
+  $i: $i + 10;
+
+  $cssVarName: "zIndex" + $layerName;
+  $zLayers: map-merge(
+    $zLayers,
+    ($cssVarName: $i),
+  );
+}

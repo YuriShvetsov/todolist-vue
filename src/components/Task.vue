@@ -1,6 +1,8 @@
 <template>
   <li class="task" ref="task">
 
+    <div class="task__hover-bg"></div>
+
     <div class="task__container">
       <div class="task__done">
         <input type="checkbox"
@@ -62,8 +64,6 @@
 
     <div class="pointer pointer_pos_top js-top-pointer"></div>
     <div class="pointer pointer_pos_bottom js-bottom-pointer"></div>
-
-    <div class="task__hover-bg"></div>
 
     <div class="task__outer">
       <modal ref="modalEditTask">
@@ -182,17 +182,12 @@ export default {
 
 .task {
   margin: 2px 0;
-
   position: relative;
-
   list-style: none;
-
   background-color: rgba(255, 255, 255, 0);
   border-radius: 5px;
-
   user-select: none;
   transition: background-color .15s ease-in-out;
-  z-index: 1;
 }
 
 .task_selected {
@@ -204,9 +199,12 @@ export default {
   animation: signal 2s ease-in-out;
 }
 
-.task__hover-bg{
-  display: block;
+.task__container {
+  position: relative;
+}
 
+.task__hover-bg {
+  display: block;
   width: 100%;
   height: 100%;
   position: absolute;
@@ -214,13 +212,12 @@ export default {
   top: 0;
   transform: scaleX(0.4);
 
-  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.012), rgba(0, 0, 0, 0.02));
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.015), rgba(0, 0, 0, 0.02));
   border-radius: 5px;
   opacity: 0;
 
   pointer-events: none;
-  transition: opacity .15s ease-in-out, transform .35s ease-in-out;
-  z-index: -1;
+  transition: opacity .15s ease-in-out, transform .35s ease-in-out, background-image 200ms ease;
 }
 
 .task:hover .task__hover-bg {
@@ -255,7 +252,6 @@ export default {
   display: block;
   width: 18px;
   height: 18px;
-
   position: relative;
 
   background-color: #fff;
@@ -264,7 +260,7 @@ export default {
 
   cursor: pointer;
   overflow: hidden;
-  z-index: 1;
+  z-index: map-get($zLayers, "zIndexPage");
 }
 
 .task__done-label::before {
@@ -283,7 +279,7 @@ export default {
   box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
   opacity: 0;
 
-  z-index: 2;
+  z-index: map-get($zLayers, "zIndexPage") + 1;
 }
 
 .task__done-checkbox:checked + .task__done-label {
@@ -297,9 +293,7 @@ export default {
 
 .task__done-checkbox:checked + .task__done-label::before {
   transform: translate(-50%,-50%) scale(1);
-
   opacity: 1;
-
   transition: transform .15s ease-in-out;
 }
 
@@ -363,6 +357,10 @@ export default {
   opacity: 0;
   pointer-events: none;
   transition: opacity .15s ease-in-out;
+}
+
+.task__menu {
+  z-index: inherit;
 }
 
 .task:hover .task__replace-button,

@@ -110,6 +110,7 @@ export default {
 .app {
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
+  z-index: map-get($zLayers, "zIndexPage");
 }
 
 .app {

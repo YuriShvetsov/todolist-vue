@@ -10,7 +10,6 @@
     >
       <div class="popup__content"
         ref="content"
-
         v-show="isOpened"
       >
         <slot name="content"></slot>

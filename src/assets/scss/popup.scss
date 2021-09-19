@@ -1,5 +1,6 @@
 .popup {
   position: relative;
+  z-index: inherit;
 }
 
 .popup__content {
@@ -12,7 +13,7 @@
   border: 1px solid #fafafc;
   border-radius: 5px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, .15);
-  z-index: 100;
+  z-index: map-get($zLayers, "zIndexPage");
 }
 
 .popup__content_pos_bottom {
