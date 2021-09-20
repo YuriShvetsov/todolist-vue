@@ -14,6 +14,8 @@
 </template>
 
 <script>
+const { translateHtmlToStr } = require('../js/contentEditableTranslators')
+
 export default {
   props: {
     modelValue: {
@@ -46,20 +48,21 @@ export default {
   },
   methods: {
     onInput(event) {
-      this.value = this.translateHtmlToStr(event.target.innerHTML)
+      this.value = translateHtmlToStr(event.target.innerHTML)
     },
 
-    translateHtmlToStr(html) {
-      const firstLine = html.match(/.*(<div>)?/i)[0].replace(/<div>.*/gi, '')
+    // translateHtmlToStr(html) {
+    //   const firstLine = html.match(/.*(<div>)?/i)[0].replace(/<div>.*/gi, '')
 
-      const divList = html.match(/<div>.*?<\/div>/gi) || []
-      const divListWithoutBr = divList.map(div => div.replace(/<div><br><\/div>/gi, ''))
-      const restLines = divListWithoutBr.map(div => div.replace(/(<\/?[^>]+>)/gi, ''))
+    //   const divList = html.match(/<div>.*?<\/div>/gi) || []
+    //   const divListWithoutBr = divList.map(div => div.replace(/<div><br><\/div>/gi, ''))
+    //   const restLines = divListWithoutBr.map(div => div.replace(/(<\/?[^>]+>)/gi, ''))
 
-      const allLines = firstLine === '' ? restLines : [firstLine].concat(restLines)
+    //   const allLines = firstLine === '' ? restLines : [firstLine].concat(restLines)
+    //   const str = allLines.map(line => line.replace(/&nbsp;/gi, ' ')).join('\n')
 
-      return allLines.map(line => line.replace(/&nbsp;/gi, ' ')).join('\n')
-    },
+    //   return str
+    // },
     translateStrToHtml(str) {
       if (str === '') return str
 
