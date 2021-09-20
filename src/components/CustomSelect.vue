@@ -100,6 +100,8 @@ export default {
       }
     },
     onKeydownOptionsList(e) {
+      if (e.key === 'Tab') return e.preventDefault()
+
       if (e.key === 'ArrowDown' && this.focusedOptionIndex < this.options.length) {
         this.focusedOptionIndex++
         this.getOptionByIndex(this.focusedOptionIndex).focus()
@@ -227,12 +229,13 @@ export default {
   transition: background-color .15s ease-out;
 }
 
-.select__option:focus {
+.select__option:hover {
   background-color: rgba(0,0,0,.02);
 }
 
-.select__option:hover {
-  background-color: rgba(0,0,0,.02);
+.select__option:focus {
+  background-color: $colorVioletLightest;
+  transition: none;
 }
 
 .select__option_empty {
