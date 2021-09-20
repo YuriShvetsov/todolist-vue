@@ -53,7 +53,8 @@ export default {
   z-index: map-get($zLayers, "zIndexModal");
 }
 .modal__container {
-  min-width: 420px;
+  width: 100%;
+  max-width: 420px;
   padding: 25px 40px;
   position: absolute;
   left: 50%;

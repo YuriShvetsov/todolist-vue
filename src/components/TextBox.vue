@@ -92,15 +92,14 @@ export default {
 
 <style scoped>
 .text-box__input {
+  width: 100%;
   max-height: 212px;
 
-  width: inherit;
-  height: inherit;
-
-  white-space: pre-line;
+  white-space: pre-wrap;
   word-break: break-word;
 
   outline: none;
   overflow-y: auto;
+  cursor: text;
 }
 </style>
