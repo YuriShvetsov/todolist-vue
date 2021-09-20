@@ -25,14 +25,11 @@
       <div class="form__row">
         <label class="form__label">
           <span class="form__label-name">Notes</span>
-          <textarea
-            rows="5"
-            spellcheck="false"
-            autocomplete="off"
-            class="form__input form__textarea"
-            v-model.trim="_notes"
-          >
-          </textarea>
+          <TextBox
+            v-bind:rows="5"
+            v-bind:spellcheck="false"
+            v-model="_notes"
+          ></TextBox>
         </label>
       </div>
 
@@ -64,9 +61,11 @@
 
 <script>
 import catchFocus from '../js/catchFocus'
+import TextBox from './TextBox.vue'
 
 export default {
   name: 'form-edit-task',
+  components: { TextBox },
   emits: ['success', 'cancel'],
   props: {
     id: String,

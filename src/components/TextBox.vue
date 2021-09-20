@@ -46,19 +46,31 @@ export default {
   },
   methods: {
     onInput(event) {
-      this.value = this.getStrFromContentEditable(event.target)
+      this.value = this.translateHtmlToStr(event.target.innerHTML)
     },
 
-    getStrFromContentEditable(el) {
-      const html = el.innerHTML
+    translateHtmlToStr(html) {
       const firstLine = html.match(/.*(<div>)?/i)[0].replace(/<div>.*/gi, '')
 
       const divList = html.match(/<div>.*?<\/div>/gi) || []
       const divListWithoutBr = divList.map(div => div.replace(/<div><br><\/div>/gi, ''))
       const restLines = divListWithoutBr.map(div => div.replace(/(<\/?[^>]+>)/gi, ''))
+
       const allLines = firstLine === '' ? restLines : [firstLine].concat(restLines)
 
       return allLines.map(line => line.replace(/&nbsp;/gi, ' ')).join('\n')
+    },
+    translateStrToHtml(str) {
+      if (str === '') return str
+
+      const lines = str.split(/\n|\r\n|\r/)
+      const divList = lines.map(line => {
+        if (line === '') return '<div><br></div>'
+
+        return `<div>${ line }</div>`
+      })
+
+      return divList.join('')
     },
     setHeight() {
       const lineHeight = 20
@@ -73,6 +85,7 @@ export default {
   },
   mounted() {
     this.setHeight()
+    this.$refs.input.innerHTML = this.translateStrToHtml(this._value)
   }
 }
 </script>
