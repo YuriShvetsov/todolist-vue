@@ -5,9 +5,9 @@
 
     <input class="select__input" 
       readonly
-      v-model="value"
-      v-bind:placeholder="emptyOption"
-      v-on:click="toggle"
+      v-bind:value="curOptionIsEmpty ? '' : curOption.name"
+      v-bind:placeholder="placeholder || clearOptionName"
+      v-on:click="onClickInput"
       v-on:keydown="onKeydownInput"
       ref="input"
     >
@@ -15,20 +15,15 @@
       <ul class="select__option-list" ref="optionsList"
         v-on:keydown="onKeydownOptionsList"
       >
-        <li class="select__option select__option_empty"
-          empty
-          tabindex="0"
-          v-on:click="onClickEmptyOption"
-          v-on:keydown="onKeydownEmptyOption"
-        >{{ emptyOption }}</li>
         <li class="select__option"
+          v-bind:class="{ 'select__option_clear': option.value === '' }"
           tabindex="0"
-          v-for="(option, id) in options"
-          v-bind:key="id"
-          v-bind:data-value="option"
+          v-for="(option, index) in allOptions"
+          v-bind:key="index"
+          v-bind:data-value="option.value"
           v-on:click="onClickOption"
           v-on:keydown="onKeydownOption"
-        >{{ option }}</li>
+        >{{ option.name }}</li>
       </ul>
     </div>
 
@@ -38,38 +33,72 @@
 <script>
 export default {
   props: {
-    placeholder: {
+    modelValue: {
       type: String,
       default: ''
     },
-    options: Array,
-    modelValue: String
+    clearOptionName: {
+      type: String,
+      default: ''
+    },
+    mainOptions: {
+      type: Array
+    },
+    placeholder: {
+      type: String,
+      default: ''
+    }
   },
   emits: ['update:modelValue'],
   data() {
     return {
-      emptyOption: 'Not chosed',
-      isOpened: false,
-      focusedOptionIndex: 0
+      isOpened: false
     }
   },
   computed: {
+    normalizedModelValue() {
+      return this.modelValue.toLowerCase()
+    },
     value: {
       get() {
-        return this.modelValue
+        return this.normalizedModelValue
       },
       set(value) {
         this.$emit('update:modelValue', value)
       }
+    },
+    allOptions() {
+      return [{ name: this.clearOptionName, value: '' }].concat(this.mainOptions)
+    },
+    clearOption() {
+      return this.allOptions[0]
+    },
+    curOption() {
+      return this.allOptions.find(item => item.value === this.value)
+    },
+    curOptionIsEmpty() {
+      return this.value === ''
+    },
+    curOptionIndex() {
+      return this.allOptions.findIndex(item => item.value === this.value)
     }
   },
   methods: {
-    initFocusedOptionIndex() {
-      if (this.value === '') return
-
-      this.focusedOptionIndex = this.options.findIndex(option => option === this.value) + 1
+    setValue(value) {
+      this.value = value
+    },
+    setNextOption() {
+      if (this.curOptionIndex < this.allOptions.length - 1) {
+        this.value = this.allOptions[this.curOptionIndex + 1].value
+      }
+    },
+    setPrevOption() {
+      if (this.curOptionIndex > 0) {
+        this.value = this.allOptions[this.curOptionIndex - 1].value
+      }
     },
 
+    // Controlling of options list state
     toggle() {
       this.isOpened = !this.isOpened
     },
@@ -79,66 +108,83 @@ export default {
     close() {
       this.isOpened = false
     },
-    getOptionByIndex(index) {
-      return this.$refs.optionsList.querySelectorAll('li')[index]
+
+    // Focusing
+    focusOnInput() {
+      this.$refs.input.focus()
+    },
+    focusOnCurOption() {
+      this.getOptionsElements().find(element => element.dataset.value === this.value).focus()
     },
 
-    onClickEmptyOption() {
-      this.value = ''
-    },
-    onClickOption(event) {
-      this.value = event.target.dataset.value
-    },
-    onKeydownInput(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault()
-        this.open()
-        
-        if (this.isOpened) {
-          this.$nextTick(() => this.getOptionByIndex(this.focusedOptionIndex).focus())
-        }
-      }
-    },
-    onKeydownOptionsList(e) {
-      if (e.key === 'Tab') return e.preventDefault()
+    // Click handlers
+    onClickInput(e) {
+      e.preventDefault()
+      this.toggle()
 
-      if (e.key === 'ArrowDown' && this.focusedOptionIndex < this.options.length) {
-        this.focusedOptionIndex++
-        this.getOptionByIndex(this.focusedOptionIndex).focus()
-      } else if (e.key === 'ArrowUp' && this.focusedOptionIndex > 0) {
-        this.focusedOptionIndex--
-        this.getOptionByIndex(this.focusedOptionIndex).focus()
+      if (this.isOpened) {
+        this.$nextTick(this.focusOnCurOption)
+      } else {
+        this.focusOnInput()
       }
     },
-    onKeydownEmptyOption(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault()
-        this.value = ''
-        this.close()
-        this.$refs.input.focus()
-      }
+    onClickOption(e) {
+      this.setValue(e.target.dataset.value)
+      this.focusOnInput()
     },
-    onKeydownOption(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault()
-        this.value = e.target.dataset.value
-        this.close()
-        this.$refs.input.focus()
-      }
-    },
-    handlerDocumentClick() {
+    handleClickDocument() {
       document.body.addEventListener('click', event => {
         if (!this.$el.contains(event.target) && !event.target.closest('.select')) {
           this.close()
         }
       })
+    },
+
+    // Keydown handlers
+    onKeydownInput(e) {
+      
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        this.toggle()
+
+        if (this.isOpened) {
+          this.$nextTick(this.focusOnCurOption)
+        } else {
+          this.focusOnInput()
+        }
+      }
+    },
+    onKeydownOption(e) {
+      e.preventDefault()
+
+      if (e.key === 'Enter') {
+        this.setValue(e.target.dataset.value)
+        this.close()
+        this.focusOnInput()
+      } else if (e.key === 'ArrowDown') {
+        this.setNextOption()
+        this.$nextTick(this.focusOnCurOption)
+      } else if (e.key === 'ArrowUp') {
+        this.setPrevOption()
+        this.$nextTick(this.focusOnCurOption)
+      }
+    },
+
+    // Helpers
+    getOptionsElements() {
+      return Array.from(this.$refs.optionsList.querySelectorAll('.select__option'))
+    },
+    normalizeOptionValues() {
+      this.mainOptions.forEach((option, index) => {
+        this.mainOptions[index].value = option.value.toLowerCase()
+      })
     }
   },
   created() {
-    this.initFocusedOptionIndex()
+    this.normalizeOptionValues()
   },
   mounted() {
-    this.handlerDocumentClick()
+    this.handleClickDocument()
   }
 }
 </script>
@@ -166,6 +212,12 @@ export default {
   outline: none;
   user-select: none;
   cursor: pointer;
+}
+
+.select_open .select__input {
+  background-color: #f6f7f9;
+  border: none;
+  outline: none;
 }
 
 .select__input:focus {
@@ -238,7 +290,15 @@ export default {
   transition: none;
 }
 
-.select__option_empty {
+.select__option_clear {
   color: #aaa;
+}
+
+.select__option_clear:hover:focus {
+  background-color: $colorVioletLightest;
+}
+
+.select__option_clear:hover {
+  background-color: rgba(0,0,0,.02);
 }
 </style>

@@ -39,7 +39,7 @@
           <span class="form__label-name">Priority</span>
           <CustomSelect
             v-model="priority"
-            v-bind="{ options: ['Low', 'Middle', 'High'] }"  
+            v-bind="prioritySelectSettings"
           ></CustomSelect>
         </label>
       </div>
@@ -75,7 +75,24 @@ export default {
       notes: '',
       priority: '',
 
-      isMounted: false
+      isMounted: false,
+      prioritySelectSettings: {
+        clearOptionName: 'Not choosed',
+        mainOptions: [
+          {
+            name: 'Low',
+            value: 'low'
+          },
+          {
+            name: 'Middle',
+            value: 'middle'
+          },
+          {
+            name: 'High',
+            value: 'high'
+          }
+        ]
+      }
     }
   },
   computed: {
